@@ -1,7 +1,7 @@
-log(serpent.block(data.raw.item["deadlock-stack-tin-ore"]))
-
+log("data-final-fixes-start")
 local Deadlock = require("utils/deadlock")
 Deadlock.MakeStackedRecipes()
 Deadlock.DensityOverride()
 Deadlock.FixLocalisedNames()
 Deadlock.SubGroups()
+log("data-final-fixes-end")

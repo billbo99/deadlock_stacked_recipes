@@ -20,7 +20,7 @@ function Deadlock.FixLocalisedNames()
                 item_table.localised_name[2] = get_localised_name(parent_item)
             end
         end
-    end
+    end         
 end
 
 function Deadlock.DensityOverride()
@@ -32,7 +32,7 @@ function Deadlock.DensityOverride()
                 for _, item_type in ipairs(item_types) do
                     if data.raw[item_type][parent_item] then
                         data.raw.item[k].stack_size = data.raw[item_type][parent_item].stack_size
-                        log(string.format("%s .. %s .. %s", item_type, parent_item, data.raw.item[k].stack_size))
+                        -- log(string.format("%s .. %s .. %s", item_type, parent_item, data.raw.item[k].stack_size))
                     end
                 end
             end
@@ -214,11 +214,11 @@ local function ReplaceResult(results)
     return results
 end
 
-local function CheckStackedProductivity(OrigProduct)
+local function CheckStackedProductivity(orig)
     for module, module_table in pairs(data.raw.module) do
         if module_table.limitation then
-            if Func.contains(module_table.limitation, OrigProduct) then
-                StackedRecipe = string.format("StackedRecipe-%s", OrigProduct)
+            if Func.contains(module_table.limitation, orig) then
+                StackedRecipe = string.format("StackedRecipe-%s", orig)
                 if data.raw.recipe[StackedRecipe] then 
                     table.insert(module_table.limitation, StackedRecipe)
                     log(module..' limitations expanded to include '..StackedRecipe)
@@ -259,7 +259,9 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     for _, ingredient in pairs(ingredients) do 
         if ingredient.name then name = ingredient.name else name=ingredient[1] end
         StackedIngredient = string.format("deadlock-stack-%s", name)
-        NewRecipe:replace_ingredient(name, StackedIngredient, StackedIngredient)
+        if data.raw.item[StackedIngredient] then
+            NewRecipe:replace_ingredient(name, StackedIngredient, StackedIngredient)
+        end
         if ingredient.type and ingredient.type == 'fluid' then ScaleUpFluid(NewRecipe, name, Multiplier) end
     end
 
@@ -299,7 +301,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
                     NewRecipe:add_unlock(tech)
                 end
             end
-            CheckStackedProductivity(OrigMainProduct)
+            CheckStackedProductivity(OrigRecipe.name)
 
         end
     
@@ -323,14 +325,14 @@ function Deadlock.MakeStackedRecipes()
         FixedRecipe = _Recipe(recipe):convert_results()  -- standardize recipe format
 
         if recipe_table.ingredients then 
-            log(string.format("recipe_table.ingredients matched for %s", recipe))
+            -- log(string.format("recipe_table.ingredients matched for %s", recipe))
             ingredients = recipe_table.ingredients
         elseif recipe_table.normal then
-            log(string.format("recipe_table.normal matched for %s", recipe))
+            -- log(string.format("recipe_table.normal matched for %s", recipe))
             ingredients = recipe_table.normal.ingredients
             expensive_ingredients = recipe_table.expensive.ingredients
         else
-            log(string.format("nothing matched for %s", recipe))
+            -- log(string.format("nothing matched for %s", recipe))
             ingredients = nil
         end
 
@@ -338,7 +340,7 @@ function Deadlock.MakeStackedRecipes()
         if ingredients then
             for _, ingredient in pairs(ingredients) do 
                 if ingredient.name then name = ingredient.name else name=ingredient[1] end
-                log(string.format("recipe (%s) has ingredient (%s)", recipe, name))
+                -- log(string.format("recipe (%s) has ingredient (%s)", recipe, name))
                 DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", name)]
                 if not DeadlockItem then 
                     if ingredient.type and ingredient.type == 'fluid' then
