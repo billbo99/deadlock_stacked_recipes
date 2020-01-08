@@ -1,7 +1,33 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+Date: 2020-01-08
+  Features:
+  Changes:
+  Bug fixes:
+    - When the item stack size was less than "deadlock stack" size some of the recipes did not
+      produce correctly
+    - Added some checks to only create a recipe if the recipe its cloning actual has a result
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+Date: 2019-12-24
+  Features:
+  Changes:
+  Bug fixes:
+    - Removed some logging that was too verbose
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2019-11-30
+  Features:
+  Changes:
+  Bug fixes:
+    - Messing about getting locales to work
+  Info:
+---------------------------------------------------------------------------------------------------
 Version: 0.0.2
 Date: 2019-11-24
-  Features: 
+  Features:
   Changes:
   Bug fixes:
     - Fixed some issues with recipe missing support for prod modules

@@ -10,16 +10,16 @@ function Func.contains(table, element)
 end
 
 function Func.ends_with(str, ending)
-    return ending == "" or str:sub(-#ending) == ending
- end
+    return ending == "" or str:sub(-(#ending)) == ending
+end
 
 function Func.starts_with(str, start)
     return str:sub(1, #start) == start
- end
+end
 
 function Func.splitString(s, regex)
-    chunks = {}
-    count = 0
+    local chunks = {}
+    local count = 0
     if regex == nil then
         regex = "%S+"
     end
@@ -40,11 +40,11 @@ function Func.getPlayerByName(playerName)
 end
 
 function Func.isAdmin(player)
-	if (player.admin) then
-	   return true
-	else
-		return false
-	end
+    if (player.admin) then
+        return true
+    else
+        return false
+    end
 end
 
 return Func
