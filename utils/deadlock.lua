@@ -94,9 +94,6 @@ function Deadlock.DensityOverride()
                     data.raw.item[k].localised_name[3] = deadlock_stack_size
 
                     log(string.format("DensityOverride .. %s", data.raw.item[k].stack_size))
-                -- if parent_item == "low-density-structure" then
-                --     log({})
-                -- end
                 end
             end
         end
@@ -234,8 +231,6 @@ local function MakeDeadlockItem(name, deadlock_tier, sub_group)
                     DeadlockItem.stack_size = parent_stack_size
                 end
             end
-            log(name)
-            log(serpent.block(DeadlockItem))
             -- stack recipe
             local stack_recipe = string.format("deadlock-stacks-stack-%s", name)
             local DeadlockStackRecipe = data.raw.recipe[stack_recipe]
@@ -278,7 +273,13 @@ function Deadlock.MakeDeadlockItems(dataset)
                 end
             end
         else
-            MakeDeadlockItem(name, name_table.tier, name_table.sub_group)
+            local sub_group
+            if name_table.sub_group then
+                sub_group = name_table.sub_group
+            else
+                sub_group = data.raw.item[name].subgroup
+            end
+            MakeDeadlockItem(name, name_table.tier, sub_group)
         end
     end
 end
