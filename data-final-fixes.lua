@@ -1,10 +1,7 @@
 local Deadlock = require("utils/deadlock")
 
 Deadlock.DensityOverride()
-log("data-final-fixes-start")
 Deadlock.MakeStackedRecipes()
 Deadlock.DensityOverride()
 Deadlock.FixLocalisedNames()
 Deadlock.SubGroups()
-log("data-final-fixes-end")
-log(serpent.block(data.raw))

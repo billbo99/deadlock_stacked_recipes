@@ -2,6 +2,7 @@ local _Data = require("__stdlib__/stdlib/data/data")
 local _Recipe = require("__stdlib__/stdlib/data/recipe")
 
 local Locale = require("utils/locale")
+local logger = require("utils/logging").logger
 
 local Func = require("utils.func")
 local Deadlock = {}
@@ -25,9 +26,11 @@ end
 local function FixRecipeLocalisedNames()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
         if Func.starts_with(recipe_name, "StackedRecipe") then
+            logger("1", "FixRecipeLocalisedNames " .. recipe_name)
             local parent_name = string.sub(recipe_name, 15)
             local main_product, main_type = Locale.get_main_product(recipe_table.normal or recipe_table.expensive or recipe_table)
             if main_product then
+                logger("1", string.format("%s %s", main_type, main_product))
                 local localised_name = data.raw[main_type][main_product].localised_name
                 if localised_name then
                     recipe_table.localised_name = {"recipe-name.deadlock-stacking-stack", localised_name}
@@ -74,12 +77,23 @@ function Deadlock.DensityOverride()
                 end
             end
         end
+
+        local types = {"item", "tool"}
         for k, _ in pairs(data.raw.item) do
             if string.match(k, "deadlock%-stack%-") then
-                local parent_item = string.sub(k, 16)
-                if data.raw.item[parent_item] then
+                local parent_item
+                local parent_name = string.sub(k, 16)
+                logger("1", string.format("%s, %s", k, parent_name))
+                for _, type in pairs(types) do
+                    if data.raw[type][parent_name] then
+                        parent_item = data.raw[type][parent_name]
+                        logger("1", string.format("parent found .. %s %s", type, parent_name))
+                    end
+                end
+
+                if parent_item then
                     local stack_size
-                    local parent_stack_size = data.raw.item[parent_item].stack_size
+                    local parent_stack_size = parent_item.stack_size
                     local child_stack_size = data.raw.item[k].stack_size
 
                     stack_size = deadlock_stack_size
@@ -93,7 +107,7 @@ function Deadlock.DensityOverride()
                     data.raw.item[k].stack_size = stack_size
                     data.raw.item[k].localised_name[3] = deadlock_stack_size
 
-                    log(string.format("DensityOverride .. %s", data.raw.item[k].stack_size))
+                    logger("1", string.format("DensityOverride .. %s .. %s .. %s", type, k, data.raw.item[k].stack_size))
                 end
             end
         end
@@ -123,7 +137,7 @@ local function MapItemUnlockedByTech(item)
                         elseif Recipe.normal.result then
                             results = {{name = Recipe.normal.result}}
                         else
-                            log("how did I get no recipe result for .. " .. recipe)
+                            logger("1", "how did I get no recipe result for .. " .. recipe)
                         end
                         for _, result in pairs(results) do
                             if result.name then
@@ -197,16 +211,19 @@ local function MakeSubGroup(sub_group)
     end
 end
 
-local function MakeDeadlockItem(name, deadlock_tier, sub_group)
-    log(string.format("name (%s), deadlock_tier (%s), sub_group (%s)", name, deadlock_tier, sub_group))
+local function MakeDeadlockItem(name, deadlock_tier, sub_group, type)
+    if type == nil then
+        type = "item"
+    end
+    logger("1", string.format("name (%s), deadlock_tier (%s), sub_group (%s), type (%s)", name, deadlock_tier, sub_group, type))
     MakeSubGroup(sub_group)
-    local Item = data.raw["item"][name]
+    local Item = data.raw[type][name]
     if Item then
         if Item.icon then
             if Item.icon_size then
                 -- all good
             else
-                log(string.format("base icon_size missing for %s", name))
+                logger("1", string.format("base icon_size missing for %s", name))
             end
         else
             for _, v2 in pairs(Item.icons) do
@@ -218,12 +235,12 @@ local function MakeDeadlockItem(name, deadlock_tier, sub_group)
             end
         end
 
-        deadlock.add_stack(name, nil, "deadlock-stacking-" .. deadlock_tier, 32, "item")
-        local DeadlockItem = data.raw["item"][string.format("deadlock-stack-%s", name)]
+        deadlock.add_stack(name, nil, "deadlock-stacking-" .. deadlock_tier, 32, type)
+        local DeadlockItem = data.raw[type][string.format("deadlock-stack-%s", name)]
         if DeadlockItem then
             -- stack size
             if settings.startup["override_stacking_size"].value then
-                local parent_stack_size = data.raw.item[name].stack_size
+                local parent_stack_size = data.raw[type][name].stack_size
                 local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
                 if deadlock_stack_size > parent_stack_size then
                     DeadlockItem.stack_size = deadlock_stack_size
@@ -256,20 +273,26 @@ local function MakeDeadlockItem(name, deadlock_tier, sub_group)
                 DeadlockItem.localised_name[2] = Item.localised_name
             end
         else
-            log("DeadlockItem missing " .. string.format("deadlock-stack-%s", name))
+            logger("1", "DeadlockItem missing " .. string.format("deadlock-stack-%s", name))
         end
     else
-        log("missing  " .. name .. "-" .. type)
+        logger("1", "missing item  " .. name)
     end
 end
 
 function Deadlock.MakeDeadlockItems(dataset)
     for name, name_table in pairs(dataset) do
-        if name_table.types then
-            for _, type in pairs(name_table.types) do
-                local Name = name .. "-" .. type
-                if data.raw.item[Name] then
-                    MakeDeadlockItem(Name, name_table.tier, type)
+        local type
+        if name_table.type then
+            type = name_table.type
+        else
+            type = "item"
+        end
+        if name_table.variations then
+            for _, variation in pairs(name_table.variations) do
+                local Name = name .. "-" .. variation
+                if data.raw[type][Name] then
+                    MakeDeadlockItem(Name, name_table.tier, variation, type)
                 end
             end
         else
@@ -277,9 +300,9 @@ function Deadlock.MakeDeadlockItems(dataset)
             if name_table.sub_group then
                 sub_group = name_table.sub_group
             else
-                sub_group = data.raw.item[name].subgroup
+                sub_group = data.raw[type][name].subgroup
             end
-            MakeDeadlockItem(name, name_table.tier, sub_group)
+            MakeDeadlockItem(name, name_table.tier, sub_group, type)
         end
     end
 end
@@ -297,6 +320,7 @@ local function ConvertToStackedItems(ingredients)
 end
 
 local function ReplaceResult(results)
+    local bAllGood = true
     for _, result in pairs(results) do
         local name
         if result.name then
@@ -311,9 +335,11 @@ local function ReplaceResult(results)
             else
                 result[1] = StackedIngredient
             end
+        else
+            bAllGood = false
         end
     end
-    return results
+    return bAllGood, results
 end
 
 local function CheckStackedProductivity(orig)
@@ -389,31 +415,44 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     end
 
     local NewRecipeResultsFlag = false
+    local rv
     if NewRecipe.results and #NewRecipe.results > 0 then
         NewRecipeResultsFlag = true
-        NewRecipe.results = ReplaceResult(NewRecipe.results)
-        if NewRecipe.energy_required then
-            NewRecipe.energy_required = NewRecipe.energy_required * Multiplier
+        rv, NewRecipe.results = ReplaceResult(NewRecipe.results)
+        if rv then
+            if NewRecipe.energy_required then
+                NewRecipe.energy_required = NewRecipe.energy_required * Multiplier
+            else
+                NewRecipe.energy_required = 0.5 * Multiplier
+            end
         else
-            NewRecipe.energy_required = 0.5 * Multiplier
+            NewRecipeResultsFlag = false
         end
     else
         if NewRecipe.normal and NewRecipe.normal.results and #NewRecipe.normal.results > 0 then
             NewRecipeResultsFlag = true
-            NewRecipe.normal.results = ReplaceResult(NewRecipe.normal.results)
-            if NewRecipe.normal.energy_required then
-                NewRecipe.normal.energy_required = NewRecipe.normal.energy_required * Multiplier
+            rv, NewRecipe.normal.results = ReplaceResult(NewRecipe.normal.results)
+            if rv then
+                if NewRecipe.normal.energy_required then
+                    NewRecipe.normal.energy_required = NewRecipe.normal.energy_required * Multiplier
+                else
+                    NewRecipe.normal.energy_required = 0.5 * Multiplier
+                end
             else
-                NewRecipe.normal.energy_required = 0.5 * Multiplier
+                NewRecipeResultsFlag = false
             end
         end
         if NewRecipe.expensive and NewRecipe.expensive.results and #NewRecipe.expensive.results > 0 then
             NewRecipeResultsFlag = true
-            NewRecipe.expensive.results = ReplaceResult(NewRecipe.expensive.results)
-            if NewRecipe.expensive.energy_required then
-                NewRecipe.expensive.energy_required = NewRecipe.expensive.energy_required * Multiplier
+            rv, NewRecipe.expensive.results = ReplaceResult(NewRecipe.expensive.results)
+            if rv then
+                if NewRecipe.expensive.energy_required then
+                    NewRecipe.expensive.energy_required = NewRecipe.expensive.energy_required * Multiplier
+                else
+                    NewRecipe.expensive.energy_required = 0.5 * Multiplier
+                end
             else
-                NewRecipe.expensive.energy_required = 0.5 * Multiplier
+                NewRecipeResultsFlag = false
             end
         end
     end
@@ -463,7 +502,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     end
 
     if NewRecipeResultsFlag then
-        log("adding recipe .. " .. NewRecipe.name)
+        logger("1", "adding recipe .. " .. NewRecipe.name)
         NewRecipe:extend()
     end
 end
@@ -471,23 +510,23 @@ end
 -- Go though each recipe to see if all ingredients / products are stacked,  if so then make a stacked recipe version of it
 function Deadlock.MakeStackedRecipes()
     for recipe, recipe_table in pairs(data.raw.recipe) do
-        local StackedItemsFound = true
+        local StackedIngredientsFound = true
+        local StackedResultsFound = true
         local ingredients
         local expensive_ingredients
         local results = {}
 
-        local StackedRecipeName = string.format("stacked-recipe-%s", recipe)
         local FixedRecipe = _Recipe(recipe):convert_results() -- standardize recipe format
 
         if recipe_table.ingredients then
-            log(string.format("recipe_table.ingredients matched for %s", recipe))
+            logger("1", string.format("recipe_table.ingredients matched for %s", recipe))
             ingredients = recipe_table.ingredients
         elseif recipe_table.normal then
-            log(string.format("recipe_table.normal matched for %s", recipe))
+            logger("1", string.format("recipe_table.normal matched for %s", recipe))
             ingredients = recipe_table.normal.ingredients
             expensive_ingredients = recipe_table.expensive.ingredients
         else
-            log(string.format("nothing matched for %s", recipe))
+            logger("1", string.format("nothing matched for %s", recipe))
             ingredients = nil
         end
 
@@ -495,8 +534,10 @@ function Deadlock.MakeStackedRecipes()
         if recipe_table.main_product and data.raw.item[recipe_table.main_product] then
             local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", recipe_table.main_product)]
             if not DeadlockItem then
-                log("main_product can not be found as a stacked item .. " .. recipe_table.main_product)
-                StackedItemsFound = false
+                logger("1", "main_product can not be found as a stacked item .. " .. recipe_table.main_product)
+                StackedResultsFound = false
+            else
+                logger("1", DeadlockItem.name)
             end
         end
         -- look though ingredients for stacked version
@@ -508,42 +549,59 @@ function Deadlock.MakeStackedRecipes()
                 else
                     name = ingredient[1]
                 end
-                log(string.format("recipe (%s) has ingredient (%s)", recipe, name))
+                logger("1", string.format("recipe (%s) has ingredient (%s)", recipe, name))
                 local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", name)]
                 if not DeadlockItem then
                     if ingredient.type and ingredient.type == "fluid" then
                         -- do nothing
                     else
-                        StackedItemsFound = false
+                        StackedIngredientsFound = false
                     end
+                else
+                    logger("1", DeadlockItem.name)
                 end
             end
         end
 
         -- look though results for stacked version
         if FixedRecipe.results then
-            results = FixedRecipe.results
-            for _, product in pairs(FixedRecipe.results) do
-                if product.name then
-                    if not data.raw["item"][string.format("deadlock-stack-%s", product.name)] then
-                        StackedItemsFound = false
+            if #FixedRecipe.results > 0 then
+                results = FixedRecipe.results
+                for _, product in pairs(results) do
+                    local product_name = product.name or product[1] or nil
+                    if product_name then
+                        if not data.raw["item"][string.format("deadlock-stack-%s", product_name)] then
+                            StackedResultsFound = false
+                        else
+                            logger("1", product_name)
+                        end
                     end
                 end
+            else
+                StackedResultsFound = false
             end
         elseif FixedRecipe.normal then
             if FixedRecipe.normal.results then
-                results = FixedRecipe.normal.results
-                for _, product in pairs(FixedRecipe.normal.results) do
-                    if product.name then
-                        if not data.raw["item"][string.format("deadlock-stack-%s", product.name)] then
-                            StackedItemsFound = false
+                if #FixedRecipe.normal.results > 0 then
+                    results = FixedRecipe.normal.results
+                    for _, product in pairs(FixedRecipe.normal.results) do
+                        local product_name = product.name or product[1] or nil
+                        if product_name then
+                            if not data.raw["item"][string.format("deadlock-stack-%s", product_name)] then
+                                StackedResultsFound = false
+                            else
+                                logger("1", product_name)
+                            end
                         end
                     end
+                else
+                    StackedResultsFound = false
                 end
             end
         end
 
-        if StackedItemsFound then
+        if StackedResultsFound and StackedIngredientsFound then
+            logger("1", string.format("MakeStackedRecipe %s .. StackedIngredientsFound %s .. StackedResultsFound %s", recipe, StackedIngredientsFound, StackedResultsFound))
             MakeStackedRecipe(recipe, ingredients, results)
         end
     end

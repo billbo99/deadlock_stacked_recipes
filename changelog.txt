@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.0.8
+Date: 2020-01-14
+  Features:
+    - Space Exploration integration
+  Changes:
+    - Logging moved to use a mod setting,  so hopefully I wont fill up peoples hard disks
+  Bug fixes:
+    - Fixes for when recipes have no results
+  Info:
+---------------------------------------------------------------------------------------------------
 Version: 0.0.7
 Date: 2020-01-09
   Features:
