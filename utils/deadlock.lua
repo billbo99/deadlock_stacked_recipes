@@ -397,6 +397,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     local NewRecipe = _Recipe(recipe):copy(StackedRecipeName):convert_results()
     local Multiplier = settings.startup["deadlock-stack-size"].value
 
+    -- Grab all the ingredients of the orignal recipe and replace with stacked versions
     ingredients = OrigRecipe.ingredients or OrigRecipe.normal.ingredients
     for _, ingredient in pairs(ingredients) do
         local name
@@ -414,6 +415,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         end
     end
 
+    -- Grab all the results of the orignal recipe and replace with stacked versions
     local NewRecipeResultsFlag = false
     local rv
     if NewRecipe.results and #NewRecipe.results > 0 then
@@ -457,10 +459,13 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         end
     end
 
-    if NewRecipe.main_product and data.raw.item[NewRecipe.main_product] then
-        local StackedIngredient = string.format("deadlock-stack-%s", NewRecipe.main_product)
-        if data.raw.item[StackedIngredient] then
-            NewRecipe.main_product = StackedIngredient
+    if NewRecipe.main_product then
+        local main_product, main_type = Locale.parse_product(NewRecipe.main_product)
+        if main_product and main_type then
+            local StackedIngredient = string.format("deadlock-stack-%s", NewRecipe.main_product)
+            if data.raw.item[StackedIngredient] then
+                NewRecipe.main_product = StackedIngredient
+            end
         end
     end
     if NewRecipe.normal and NewRecipe.normal.main_product and data.raw.item[NewRecipe.normal.main_product] then

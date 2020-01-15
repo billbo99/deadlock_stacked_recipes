@@ -166,10 +166,23 @@ function Locale.get_fluid_locale(name)
 end
 
 function Locale.parse_product(product)
+    local types = {"item", "tool"}
     --- Get a pair of `name, type` from the given product.
     if type(product) == "string" then
+        for _, type in pairs(types) do
+            if data.raw[type] and data.raw[type][product] then
+                return product, type
+            end
+        end
         return product, "item"
-    elseif product.name then
+    elseif type(product) == "table" then
+        local prd = product.name or product[1]
+        for _, type in pairs(types) do
+            if data.raw[type] and data.raw[type][prd] then
+                return prd, type
+            end
+        end
+
         local type = product.type or "item"
         return product.name, type
     else
