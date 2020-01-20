@@ -5,6 +5,7 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     require("mods/vanilla/data.lua")
     require("mods/DyWorld/data.lua")
     require("mods/Krastorio/data.lua")
+    require("mods/Omnimatter/data.lua")
     require("mods/FactorioExtended-Plus-Core/data.lua")
     require("mods/FactorioExtended-Plus-Revisited/data.lua")
 else

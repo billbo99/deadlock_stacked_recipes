@@ -8,5 +8,4 @@ if mods["Krastorio"] then
     }
 
     Deadlock.MakeDeadlockItems(Items)
-    Deadlock.FixResearchTree(Items)
 end

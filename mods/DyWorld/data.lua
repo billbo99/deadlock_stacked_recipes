@@ -24,5 +24,4 @@ if mods["DyWorld"] then
     }
 
     Deadlock.MakeDeadlockItems(Items)
-    Deadlock.FixResearchTree(Items)
 end

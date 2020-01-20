@@ -12,7 +12,7 @@ function Logger.logger(flag, message)
     end
 
     if type(setting) == "number" and setting >= level then
-        log(message)
+        log("FLAG" .. flag .. " " .. message)
     end
 end
 

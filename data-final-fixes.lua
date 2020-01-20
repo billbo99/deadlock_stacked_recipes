@@ -1,3 +1,5 @@
+local logger = require("utils/logging").logger
+
 if settings.startup["deadlock-enable-beltboxes"].value then
     local Deadlock = require("utils/deadlock")
 
@@ -6,4 +8,9 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     Deadlock.DensityOverride()
     Deadlock.FixLocalisedNames()
     Deadlock.SubGroups()
+    Deadlock.FixResearchTree()
 end
+
+logger("9", serpent.block(data.raw))
+
+-- logger("7", serpent.block(data.raw.recipe["StackedRecipe-automation-science-pack"].icons))

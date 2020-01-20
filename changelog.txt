@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2020-01-20
+  Features:
+    - Omnimatter integration (first draft)
+    - Bulk fluids to stacked item(s)
+    - Added a library of stacked icons for the recipes
+    - Linked stacked recipes to regular recipes in research tree
+  Changes:
+  Bug fixes:
+  Info:
+---------------------------------------------------------------------------------------------------
 Version: 0.1.0
 Date: 2020-01-15
   Features:

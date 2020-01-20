@@ -218,6 +218,12 @@ function Locale.get_main_product(recipe)
         else
             return nil, nil
         end
+    elseif recipe.normal.results then
+        if table_size(recipe.normal.results) == 1 then
+            return Locale.parse_product(recipe.normal.results[1])
+        else
+            return nil, nil
+        end
     else
         return Locale.parse_product(recipe.result)
     end

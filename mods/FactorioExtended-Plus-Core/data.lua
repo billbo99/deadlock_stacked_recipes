@@ -6,5 +6,4 @@ if mods["FactorioExtended-Plus-Core"] then
     }
 
     Deadlock.MakeDeadlockItems(Items)
-    Deadlock.FixResearchTree(Items)
 end
