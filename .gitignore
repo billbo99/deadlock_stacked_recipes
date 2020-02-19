@@ -1,3 +1,11 @@
+# Project exclusions
+/__python__/raw_input
+/__python__/raw_output
+/__python__/raw_archive
+/__python__/mips_input
+/__python__/mips_output
+/__python__/mips_archive
+
 # Compiled Lua sources
 luac.out
 

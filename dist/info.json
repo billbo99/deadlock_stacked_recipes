@@ -1,0 +1,28 @@
+{
+    "name": "deadlock_stacked_recipes",
+    "version": "0.2.1",
+    "title": "Deadlock Stacked Recipes",
+    "author": "billbo99",
+    "contact": "",
+    "homepage": "https://mods.factorio.com/mod/deadlock_stacked_recipes",
+    "factorio_version": "0.18",
+    "dependencies": [
+        "base >= 0.18.3",
+        "stdlib >= 1.4.0",
+        "deadlock-beltboxes-loaders >= 2.3.0",
+        "!deadlock-experiments",
+        "(?)space-exploration >= 0.2.2",
+        "(?)space-exploration-postprocess",
+        "(?)bobores >= 0.18.0",
+        "(?)bobplates >= 0.18.1",
+        "(?)angelssmelting >= 0.5.7",
+        "(?)angelsrefining >= 0.10.14",
+        "(?)omnimatter >= 3.0.1",
+        "(?)Yuoki >= 0.8.87",
+        "(?)Krastorio >= 1.4.53",
+        "(?)FactorioExtended-Plus-Core >= 0.4.0",
+        "(?)FactorioExtended-Plus-Revisited",
+        "(?)deadlock-stacking-crating-bobs >= 0.7.6"
+    ],
+    "description": "This mod makes recipes using stacked ingredients to produce stacked output.  The reason for this mod is I have found some mod packs can end up with major speed boost that even loaders are unable to provide the resources fast enough"
+}

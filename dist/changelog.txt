@@ -1,0 +1,99 @@
+---------------------------------------------------------------------------------------------------
+Version: 0.2.1
+Date: 2020-02-19
+  Features:
+    - Added more vanilla recipes
+    - Updated the graphics to use generated stacked icons (python + pillow script)
+---------------------------------------------------------------------------------------------------
+Version: 0.2.0
+Date: 2020-02-01
+  Features:
+    - Updated for 0.18
+---------------------------------------------------------------------------------------------------
+Version: 0.1.1
+Date: 2020-01-20
+  Features:
+    - Omnimatter integration (first draft)
+    - Bulk fluids to stacked item(s)
+    - Added a library of stacked icons for the recipes
+    - Linked stacked recipes to regular recipes in research tree
+  Changes:
+  Bug fixes:
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.1.0
+Date: 2020-01-15
+  Features:
+    - Yuoki Industries integration (first draft)
+  Changes:
+  Bug fixes:
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.9
+Date: 2020-01-14
+  Features:
+  Changes:
+  Bug fixes:
+    - If beltboxes not enabled, then stop this mod from taking any action.
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.8
+Date: 2020-01-14
+  Features:
+    - Space Exploration integration
+  Changes:
+    - Logging moved to use a mod setting,  so hopefully I wont fill up peoples hard disks
+  Bug fixes:
+    - Fixes for when recipes have no results
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.7
+Date: 2020-01-09
+  Features:
+  Changes:
+  Bug fixes:
+    - Fixes for Krastorio matter recipe to output stacked items
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.6
+Date: 2020-01-08
+  Features:
+  Changes:
+  Bug fixes:
+    - When the item stack size was less than "deadlock stack" size some of the recipes did not
+      produce correctly
+    - Added some checks to only create a recipe if the recipe its cloning actual has a result
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.4
+Date: 2019-12-24
+  Features:
+  Changes:
+  Bug fixes:
+    - Removed some logging that was too verbose
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.3
+Date: 2019-11-30
+  Features:
+  Changes:
+  Bug fixes:
+    - Messing about getting locales to work
+  Info:
+---------------------------------------------------------------------------------------------------
+Version: 0.0.2
+Date: 2019-11-24
+  Features:
+  Changes:
+  Bug fixes:
+    - Fixed some issues with recipe missing support for prod modules
+    - Removed some logging messages
+  Info:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Version: 0.0.1
+Date: 2019-11-15
+  Features: First release
+  Changes:
+  Bug fixes:
+  Info:
+---------------------------------------------------------------------------------------------------
