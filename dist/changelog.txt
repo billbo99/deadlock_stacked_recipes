@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.3
+Date: 2020-02-26
+  Features:
+    - Added first attempt at supporting Pyanadon
+      .. requires the mod DeadlocksStackingForPyanadon being installed
+---------------------------------------------------------------------------------------------------
+Version: 0.2.2
+Date: 2020-02-22
+  Features:
+    - Added more vanilla recipes,  enough that science packs can all be crafted in stacks
+---------------------------------------------------------------------------------------------------
 Version: 0.2.1
 Date: 2020-02-19
   Features:

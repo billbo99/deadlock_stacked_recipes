@@ -71,8 +71,14 @@ function Deadlock.DensityOverride()
                 end
             end
             if string.match(k, "deadlock%-stack%-stack%-") then
-                if data.raw.recipe[k].ingredients and data.raw.recipe[k].ingredients[1][2] < deadlock_stack_size then
-                    data.raw.recipe[k].ingredients[1][2] = deadlock_stack_size
+                if data.raw.recipe[k].ingredients then
+                    if data.raw.recipe[k].ingredients[1].amount then
+                        if data.raw.recipe[k].ingredients[1].amount < deadlock_stack_size then
+                            data.raw.recipe[k].ingredients[1].amount = deadlock_stack_size
+                        end
+                    elseif #data.raw.recipe[k].ingredients[1] >= 2 and data.raw.recipe[k].ingredients[1][2] < deadlock_stack_size then
+                        data.raw.recipe[k].ingredients[1][2] = deadlock_stack_size
+                    end
                 end
             end
         end
@@ -538,6 +544,7 @@ end
 -- Go though each recipe to see if all ingredients / products are stacked,  if so then make a stacked recipe version of it
 function Deadlock.MakeStackedRecipes()
     for recipe, recipe_table in pairs(data.raw.recipe) do
+        logger("1", string.format("000 MakeStackedRecipes %s", recipe))
         if not Func.starts_with(recipe, "StackedRecipe") then
             local SomethingStacked = false
             local StackedIngredientsFound = true
@@ -585,6 +592,7 @@ function Deadlock.MakeStackedRecipes()
                         if ingredient.type and ingredient.type == "fluid" then
                             -- do nothing
                         else
+                            logger("2", string.format("recipe (%s) missing stacked ingredient (%s)", recipe, string.format("deadlock-stack-%s", name)))
                             StackedIngredientsFound = false
                         end
                     else
@@ -606,6 +614,7 @@ function Deadlock.MakeStackedRecipes()
                                     -- do nothing
                                     logger("1", "fluid .. " .. product_name)
                                 else
+                                    logger("2", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
                                     StackedResultsFound = false
                                 end
                             else
@@ -629,6 +638,7 @@ function Deadlock.MakeStackedRecipes()
                                         -- do nothing
                                         logger("1", "fluid .. " .. product_name)
                                     else
+                                        logger("2", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
                                         StackedResultsFound = false
                                     end
                                 else
@@ -643,8 +653,8 @@ function Deadlock.MakeStackedRecipes()
                 end
             end
 
+            logger("2", string.format("MakeStackedRecipe %s .. StackedIngredientsFound %s .. StackedResultsFound %s", recipe, StackedIngredientsFound, StackedResultsFound))
             if SomethingStacked and StackedResultsFound and StackedIngredientsFound then
-                logger("1", string.format("MakeStackedRecipe %s .. StackedIngredientsFound %s .. StackedResultsFound %s", recipe, StackedIngredientsFound, StackedResultsFound))
                 MakeStackedRecipe(recipe, ingredients, results)
             end
         end
