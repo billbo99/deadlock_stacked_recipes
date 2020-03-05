@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.0
+Date: 2020-02-28
+  Changes:
+    - Moved my new vanilla stacked items out of this mod into their own mod which this mod
+      will be dependent on.
+    - Moved some internal support for Krastorio out to is own mod
+---------------------------------------------------------------------------------------------------
 Version: 0.2.3
 Date: 2020-02-26
   Features:

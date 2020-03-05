@@ -1,30 +1,31 @@
 local rusty_locale = require("rusty-locale.locale")
+local rusty_icons = require("rusty-locale.icons")
+local rusty_recipes = require("rusty-locale.recipes")
 
 local _Data = require("__stdlib__/stdlib/data/data")
 local _Recipe = require("__stdlib__/stdlib/data/recipe")
 
-local Icons = require("utils/icons")
 local Locale = require("utils/locale")
 local logger = require("utils/logging").logger
 
 local Func = require("utils.func")
 local Deadlock = {}
 
-local function get_item_localised_name(item_name)
-    if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
-        return data.raw.item[item_name].localised_name
-    else
-        return {"item-name." .. item_name}
-    end
-end
+-- local function get_item_localised_name(item_name)
+--     if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
+--         return data.raw.item[item_name].localised_name
+--     else
+--         return {"item-name." .. item_name}
+--     end
+-- end
 
-local function get_recipe_localised_name(recipe_name)
-    if data.raw.recipe[recipe_name] and data.raw.recipe[recipe_name].localised_name then
-        return data.raw.recipe[recipe_name].localised_name
-    else
-        return {"recipe-name." .. recipe_name}
-    end
-end
+-- local function get_recipe_localised_name(recipe_name)
+--     if data.raw.recipe[recipe_name] and data.raw.recipe[recipe_name].localised_name then
+--         return data.raw.recipe[recipe_name].localised_name
+--     else
+--         return {"recipe-name." .. recipe_name}
+--     end
+-- end
 
 local function FixRecipeLocalisedNames()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
@@ -160,112 +161,112 @@ local function MakeSubGroup(sub_group)
     end
 end
 
-local function MakeDeadlockItem(name, deadlock_tier, sub_group, type)
-    if type == nil then
-        type = "item"
-    end
-    logger("1", string.format("name (%s), deadlock_tier (%s), sub_group (%s), type (%s)", name, deadlock_tier, sub_group, type))
-    MakeSubGroup(sub_group)
-    local Item = data.raw[type][name]
-    if Item then
-        if Item.icon then
-            if Item.icon_size then
-                -- all good
-            else
-                logger("2", string.format("base icon_size missing for %s", name))
-            end
-        else
-            for _, v2 in pairs(Item.icons) do
-                if v2.icon_size then
-                    -- all good
-                else
-                    v2.icon_size = Item.icon_size
-                end
-            end
-        end
+-- local function MakeDeadlockItem(name, deadlock_tier, sub_group, type)
+--     if type == nil then
+--         type = "item"
+--     end
+--     logger("1", string.format("name (%s), deadlock_tier (%s), sub_group (%s), type (%s)", name, deadlock_tier, sub_group, type))
+--     MakeSubGroup(sub_group)
+--     local Item = data.raw[type][name]
+--     if Item then
+--         if Item.icon then
+--             if Item.icon_size then
+--                 -- all good
+--             else
+--                 logger("2", string.format("base icon_size missing for %s", name))
+--             end
+--         else
+--             for _, v2 in pairs(Item.icons) do
+--                 if v2.icon_size then
+--                     -- all good
+--                 else
+--                     v2.icon_size = Item.icon_size
+--                 end
+--             end
+--         end
 
-        if tonumber(deadlock_tier) then
-            deadlock_tier = "deadlock-stacking-" .. deadlock_tier
-        end
+--         if tonumber(deadlock_tier) then
+--             deadlock_tier = "deadlock-stacking-" .. deadlock_tier
+--         end
 
-        if Icons[name] then
-            logger("2", string.format("add_stack-a .. %s .. %s .. %s .. %s", name, "__deadlock_stacked_recipes__/graphics/icons/" .. Icons[name], deadlock_tier, type))
-            deadlock.add_stack(name, "__deadlock_stacked_recipes__/graphics/icons/" .. Icons[name], deadlock_tier, 64, type, 4)
-        else
-            logger("2", string.format("add_stack-b .. %s .. %s .. %s", name, deadlock_tier, type))
-            deadlock.add_stack(name, nil, deadlock_tier, 32, type)
-        end
-        local DeadlockItem = data.raw[type][string.format("deadlock-stack-%s", name)]
-        if DeadlockItem then
-            -- stack size
-            if settings.startup["override_stacking_size"].value then
-                local parent_stack_size = data.raw[type][name].stack_size
-                local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
-                if deadlock_stack_size > parent_stack_size then
-                    DeadlockItem.stack_size = deadlock_stack_size
-                else
-                    DeadlockItem.stack_size = parent_stack_size
-                end
-            end
-            -- stack recipe
-            local stack_recipe = string.format("deadlock-stacks-stack-%s", name)
-            local DeadlockStackRecipe = data.raw.recipe[stack_recipe]
-            local locale = rusty_locale.of(Item)
-            if locale.name then
-                DeadlockStackRecipe.localised_name[2] = locale.name
-            end
-            DeadlockStackRecipe.subgroup = "Stacked-" .. sub_group
+--         if Icons[name] then
+--             logger("2", string.format("add_stack-a .. %s .. %s .. %s .. %s", name, "__deadlock_stacked_recipes__/graphics/icons/" .. Icons[name], deadlock_tier, type))
+--             deadlock.add_stack(name, "__deadlock_stacked_recipes__/graphics/icons/" .. Icons[name], deadlock_tier, 64, type, 4)
+--         else
+--             logger("2", string.format("add_stack-b .. %s .. %s .. %s", name, deadlock_tier, type))
+--             deadlock.add_stack(name, nil, deadlock_tier, 32, type)
+--         end
+--         local DeadlockItem = data.raw[type][string.format("deadlock-stack-%s", name)]
+--         if DeadlockItem then
+--             -- stack size
+--             if settings.startup["override_stacking_size"].value then
+--                 local parent_stack_size = data.raw[type][name].stack_size
+--                 local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
+--                 if deadlock_stack_size > parent_stack_size then
+--                     DeadlockItem.stack_size = deadlock_stack_size
+--                 else
+--                     DeadlockItem.stack_size = parent_stack_size
+--                 end
+--             end
+--             -- stack recipe
+--             local stack_recipe = string.format("deadlock-stacks-stack-%s", name)
+--             local DeadlockStackRecipe = data.raw.recipe[stack_recipe]
+--             local locale = rusty_locale.of(Item)
+--             if locale.name then
+--                 DeadlockStackRecipe.localised_name[2] = locale.name
+--             end
+--             DeadlockStackRecipe.subgroup = "Stacked-" .. sub_group
 
-            -- unstack recipe
-            local unstack_recipe = string.format("deadlock-stacks-unstack-%s", name)
-            local DeadlockUnStackRecipe = data.raw.recipe[unstack_recipe]
-            if locale.name then
-                DeadlockUnStackRecipe.localised_name[2] = locale.name
-            end
-            DeadlockUnStackRecipe.subgroup = "Stacked-" .. sub_group
+--             -- unstack recipe
+--             local unstack_recipe = string.format("deadlock-stacks-unstack-%s", name)
+--             local DeadlockUnStackRecipe = data.raw.recipe[unstack_recipe]
+--             if locale.name then
+--                 DeadlockUnStackRecipe.localised_name[2] = locale.name
+--             end
+--             DeadlockUnStackRecipe.subgroup = "Stacked-" .. sub_group
 
-            -- item
-            DeadlockItem.subgroup = "Stacked-" .. sub_group
-            if Item.order then
-                DeadlockItem.order = Item.subgroup .. "-" .. Item.order
-            end
-            if locale.name then
-                DeadlockItem.localised_name[2] = locale.name
-            end
-        else
-            logger("2", "DeadlockItem missing " .. string.format("deadlock-stack-%s", name))
-        end
-    else
-        logger("2", "missing item  " .. name)
-    end
-end
+--             -- item
+--             DeadlockItem.subgroup = "Stacked-" .. sub_group
+--             if Item.order then
+--                 DeadlockItem.order = Item.subgroup .. "-" .. Item.order
+--             end
+--             if locale.name then
+--                 DeadlockItem.localised_name[2] = locale.name
+--             end
+--         else
+--             logger("2", "DeadlockItem missing " .. string.format("deadlock-stack-%s", name))
+--         end
+--     else
+--         logger("2", "missing item  " .. name)
+--     end
+-- end
 
-function Deadlock.MakeDeadlockItems(dataset)
-    for name, name_table in pairs(dataset) do
-        local type
-        if name_table.type then
-            type = name_table.type
-        else
-            type = "item"
-        end
-        if name_table.variations then
-            for _, variation in pairs(name_table.variations) do
-                local Name = name .. "-" .. variation
-                if data.raw[type][Name] then
-                    MakeDeadlockItem(Name, name_table.tier, variation, type)
-                end
-            end
-        else
-            local sub_group
-            if name_table.sub_group then
-                sub_group = name_table.sub_group
-            else
-                sub_group = data.raw[type][name].subgroup
-            end
-            MakeDeadlockItem(name, name_table.tier, sub_group, type)
-        end
-    end
-end
+-- function Deadlock.MakeDeadlockItems(dataset)
+--     for name, name_table in pairs(dataset) do
+--         local type
+--         if name_table.type then
+--             type = name_table.type
+--         else
+--             type = "item"
+--         end
+--         if name_table.variations then
+--             for _, variation in pairs(name_table.variations) do
+--                 local Name = name .. "-" .. variation
+--                 if data.raw[type][Name] then
+--                     MakeDeadlockItem(Name, name_table.tier, variation, type)
+--                 end
+--             end
+--         else
+--             local sub_group
+--             if name_table.sub_group then
+--                 sub_group = name_table.sub_group
+--             else
+--                 sub_group = data.raw[type][name].subgroup
+--             end
+--             MakeDeadlockItem(name, name_table.tier, sub_group, type)
+--         end
+--     end
+-- end
 
 local function ConvertToStackedItems(ingredients)
     for _, ingredient in pairs(ingredients) do
@@ -441,8 +442,8 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     logger("4", "Processing new recipe main_product")
     local StackedProduct = nil
     if NewRecipe.main_product then
-        local main_product, main_type = Locale.parse_product(NewRecipe.main_product)
-        if main_product and main_type then
+        local main_product = rusty_recipes.get_main_product(NewRecipe)
+        if main_product and main_product.name then
             StackedProduct = string.format("deadlock-stack-%s", NewRecipe.main_product)
             if data.raw.item[StackedProduct] then
                 NewRecipe.main_product = StackedProduct
@@ -486,50 +487,54 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         NewRecipe.subgroup = DeadlockUnStackRecipe.subgroup
     end
 
-    -- Stacked Icon for Stacked Recipe
-    logger("4", "Processing new recipe icon")
+    -- -- Stacked Icon for Stacked Recipe
+    -- logger("4", "Processing new recipe icon")
     local icon = nil
     local icon_size = nil
     local icons = nil
-    local make_stacked_icon = true
+    local make_stacked_icon = false
 
-    local main_product, main_type = Locale.get_main_product(NewRecipe._raw)
-
-    -- First look to see if I have made a custom icon for the recipe
-    if Icons[OrigRecipe.name] then
-        NewRecipe.icon = "__deadlock_stacked_recipes__/graphics/icons/" .. Icons[OrigRecipe.name]
-        NewRecipe.icon_size = 64
-        NewRecipe.icon_mipmaps = 4
-        make_stacked_icon = false
-    elseif data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icons then
+    -- First look to see if recipe has an icon defined
+    if data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icons then
         -- Look at recipe for an icon
+        make_stacked_icon = true
         icons = data.raw.recipe[OrigRecipe.name].icons
+        for _, _icon in pairs(icons) do
+            if string.find(string.lower(_icon.icon), "stacked") then
+                make_stacked_icon = false
+            end
+        end
     elseif data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icon then
         -- Look at recipe for an icon
+        make_stacked_icon = true
         icon = data.raw.recipe[OrigRecipe.name].icon
         icon_size = data.raw.recipe[OrigRecipe.name].icon_size
-    elseif data.raw[main_type] and data.raw[main_type][main_product] and data.raw[main_type][main_product].icons then
-        -- Look at main_product for an icon
-        icons = data.raw[main_type][main_product].icons
-    elseif data.raw[main_type] and data.raw[main_type][main_product] and data.raw[main_type][main_product].icon then
-        -- Look at main_product for an icon
-        icon = data.raw[main_type][main_product].icon
-        icon_size = data.raw[main_type][main_product].icon_size
+        if string.find(string.lower(icon), "stacked") then
+            make_stacked_icon = false
+        end
     end
 
-    logger("5", string.format("make_stacked_icon = %s", make_stacked_icon))
-    if icons and make_stacked_icon then
-        NewRecipe.icons = icons
-        NewRecipe.icon = nil
-    elseif icon and icon_size and make_stacked_icon then
-        logger("5", string.format("make_stacked_icon %s %s", OrigRecipe.name, icon))
-        NewRecipe.icons = {
-            -- {icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/blank.png", icon_size = 32, scale = 1},
-            {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 3}},
-            {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 0}},
-            {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, -3}}
-        }
-        NewRecipe.icon = nil
+    if make_stacked_icon then
+        if icons then
+            NewRecipe.icons = icons
+            NewRecipe.icon = nil
+        elseif icon and icon_size then
+            logger("5", string.format("make_stacked_icon %s %s", OrigRecipe.name, icon))
+            local base_icon
+            if icon_size == 64 then
+                base_icon = "__deadlock_stacked_recipes__/graphics/blank_64.png"
+            else
+                base_icon = "__deadlock_stacked_recipes__/graphics/blank_32.png"
+            end
+
+            NewRecipe.icons = {
+                {icon = base_icon, icon_size = icon_size, scale = 1},
+                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 3}},
+                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 0}},
+                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, -3}}
+            }
+            NewRecipe.icon = nil
+        end
     end
 
     if NewRecipeResultsFlag then
@@ -681,42 +686,42 @@ function Deadlock.SubGroups()
     end
 end
 
-function Deadlock.ChangeIcons()
-    local name
-    for k, v in pairs(Icons) do
-        logger("1", string.format("ChangeIcons .. k (%s) .. v (%s)", k, v))
-        name = string.format("StackedRecipe-%s", k)
-        if data.raw.recipe[name] then
-            data.raw.recipe[name].icons = nil
-            data.raw.recipe[name].icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v)
-            data.raw.recipe[name].icon_size = 64
-            data.raw.recipe[name].icon_mipmaps = 4
-        end
+-- function Deadlock.ChangeIcons()
+--     local name
+--     for k, v in pairs(Icons) do
+--         logger("1", string.format("ChangeIcons .. k (%s) .. v (%s)", k, v))
+--         name = string.format("StackedRecipe-%s", k)
+--         if data.raw.recipe[name] then
+--             data.raw.recipe[name].icons = nil
+--             data.raw.recipe[name].icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v)
+--             data.raw.recipe[name].icon_size = 64
+--             data.raw.recipe[name].icon_mipmaps = 4
+--         end
 
-        name = string.format("deadlock-stack-%s", k)
-        if data.raw.item[name] then
-            data.raw.item[name].icons = nil
-            data.raw.item[name].icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v)
-            data.raw.item[name].icon_size = 64
-            data.raw.item[name].icon_mipmaps = 4
-        end
+--         name = string.format("deadlock-stack-%s", k)
+--         if data.raw.item[name] then
+--             data.raw.item[name].icons = nil
+--             data.raw.item[name].icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v)
+--             data.raw.item[name].icon_size = 64
+--             data.raw.item[name].icon_mipmaps = 4
+--         end
 
-        name = string.format("deadlock-stacks-unstack-%s", k)
-        if data.raw.recipe[name] then
-            data.raw.recipe[name].icons = {
-                {icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v), icon_mipmaps = 4, icon_size = 64},
-                {icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-u-64.png", icon_size = 64, scale = 0.25}
-            }
-        end
+--         name = string.format("deadlock-stacks-unstack-%s", k)
+--         if data.raw.recipe[name] then
+--             data.raw.recipe[name].icons = {
+--                 {icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v), icon_mipmaps = 4, icon_size = 64},
+--                 {icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-u-64.png", icon_size = 64, scale = 0.25}
+--             }
+--         end
 
-        name = string.format("deadlock-stacks-stack-%s", k)
-        if data.raw.recipe[name] then
-            data.raw.recipe[name].icons = {
-                {icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v), icon_mipmaps = 4, icon_size = 64},
-                {icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-d-64.png", icon_size = 64, scale = 0.25}
-            }
-        end
-    end
-end
+--         name = string.format("deadlock-stacks-stack-%s", k)
+--         if data.raw.recipe[name] then
+--             data.raw.recipe[name].icons = {
+--                 {icon = string.format("__deadlock_stacked_recipes__/graphics/icons/%s", v), icon_mipmaps = 4, icon_size = 64},
+--                 {icon = "__deadlock-beltboxes-loaders__/graphics/icons/square/arrow-d-64.png", icon_size = 64, scale = 0.25}
+--             }
+--         end
+--     end
+-- end
 
 return Deadlock
