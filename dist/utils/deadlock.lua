@@ -383,7 +383,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         end
         local StackedIngredient = string.format("deadlock-stack-%s", name)
         if data.raw.item[StackedIngredient] then
-            logger("5", string.format("Adding %s to new recipe", name))
+            logger("5", string.format("Adding %s to new recipe", StackedIngredient))
             NewRecipe:replace_ingredient(name, StackedIngredient, StackedIngredient)
         end
         if ingredient.type and ingredient.type == "fluid" then
@@ -442,14 +442,16 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     logger("4", "Processing new recipe main_product")
     local StackedProduct = nil
     if NewRecipe.main_product then
-        local main_product = rusty_recipes.get_main_product(NewRecipe)
-        if main_product and main_product.name then
-            StackedProduct = string.format("deadlock-stack-%s", NewRecipe.main_product)
-            if data.raw.item[StackedProduct] then
-                NewRecipe.main_product = StackedProduct
-            end
+        logger("6", "main_product .. " .. NewRecipe.main_product)
+        StackedProduct = string.format("deadlock-stack-%s", NewRecipe.main_product)
+        if data.raw.item[StackedProduct] then
+            NewRecipe.main_product = StackedProduct
+            logger("5", string.format("main_product .. %s .. set on recipe", StackedProduct))
+        else
+            logger("5", string.format("no stacked version of main_product found  .. %s", StackedProduct))
         end
     end
+
     if NewRecipe.normal and NewRecipe.normal.main_product and data.raw.item[NewRecipe.normal.main_product] then
         StackedProduct = string.format("deadlock-stack-%s", NewRecipe.normal.main_product)
         if data.raw.item[StackedProduct] then
@@ -561,10 +563,10 @@ function Deadlock.MakeStackedRecipes()
             local FixedRecipe = _Recipe(recipe):convert_results() -- standardize recipe format
 
             if recipe_table.ingredients then
-                logger("1", string.format("recipe_table.ingredients matched for %s", recipe))
+                logger("2", string.format("recipe_table.ingredients matched for %s", recipe))
                 ingredients = recipe_table.ingredients
             elseif recipe_table.normal then
-                logger("1", string.format("recipe_table.normal matched for %s", recipe))
+                logger("2", string.format("recipe_table.normal matched for %s", recipe))
                 ingredients = recipe_table.normal.ingredients
                 expensive_ingredients = recipe_table.expensive.ingredients
             else
@@ -579,7 +581,7 @@ function Deadlock.MakeStackedRecipes()
                     logger("1", "main_product can not be found as a stacked item .. " .. recipe_table.main_product)
                     StackedResultsFound = false
                 else
-                    logger("1", DeadlockItem.name)
+                    logger("2", "main_product found .. " .. DeadlockItem.name)
                 end
             end
             -- look though ingredients for stacked version
@@ -591,7 +593,7 @@ function Deadlock.MakeStackedRecipes()
                     else
                         name = ingredient[1]
                     end
-                    logger("1", string.format("recipe (%s) has ingredient (%s)", recipe, name))
+                    logger("2", string.format("recipe (%s) has ingredient (%s)", recipe, name))
                     local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", name)]
                     if not DeadlockItem then
                         if ingredient.type and ingredient.type == "fluid" then
@@ -602,7 +604,7 @@ function Deadlock.MakeStackedRecipes()
                         end
                     else
                         SomethingStacked = true
-                        logger("1", DeadlockItem.name)
+                        logger("1", "Stacked ingredient found .. " .. DeadlockItem.name)
                     end
                 end
             end
@@ -614,17 +616,18 @@ function Deadlock.MakeStackedRecipes()
                     for _, product in pairs(results) do
                         local product_name = product.name or product[1] or nil
                         if product_name then
-                            if not data.raw["item"][string.format("deadlock-stack-%s", product_name)] then
+                            local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", product_name)]
+                            if not DeadlockItem then
                                 if product.type == "fluid" then
                                     -- do nothing
-                                    logger("1", "fluid .. " .. product_name)
+                                    logger("2", "fluid .. " .. product_name)
                                 else
-                                    logger("2", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
+                                    logger("1", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
                                     StackedResultsFound = false
                                 end
                             else
                                 SomethingStacked = true
-                                logger("1", product_name)
+                                logger("1", "Stacked result found " .. DeadlockItem.name)
                             end
                         end
                     end
@@ -638,17 +641,18 @@ function Deadlock.MakeStackedRecipes()
                         for _, product in pairs(FixedRecipe.normal.results) do
                             local product_name = product.name or product[1] or nil
                             if product_name then
-                                if not data.raw["item"][string.format("deadlock-stack-%s", product_name)] then
+                                local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", product_name)]
+                                if not DeadlockItem then
                                     if product.type == "fluid" then
                                         -- do nothing
-                                        logger("1", "fluid .. " .. product_name)
+                                        logger("2", "fluid .. " .. product_name)
                                     else
-                                        logger("2", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
+                                        logger("1", string.format("recipe (%s) missing stacked result (%s)", recipe, string.format("deadlock-stack-%s", product_name)))
                                         StackedResultsFound = false
                                     end
                                 else
                                     SomethingStacked = true
-                                    logger("1", product_name)
+                                    logger("1", "Stacked result found " .. DeadlockItem.name)
                                 end
                             end
                         end
