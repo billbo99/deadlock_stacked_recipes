@@ -522,15 +522,10 @@ local function MakeStackedRecipe(recipe, ingredients, results)
             NewRecipe.icon = nil
         elseif icon and icon_size then
             logger("5", string.format("make_stacked_icon %s %s", OrigRecipe.name, icon))
-            local base_icon
-            if icon_size == 64 then
-                base_icon = "__deadlock_stacked_recipes__/graphics/blank_64.png"
-            else
-                base_icon = "__deadlock_stacked_recipes__/graphics/blank_32.png"
-            end
-
+            local base_icon = "__deadlock_stacked_recipes__/graphics/blank_32.png"
+            local base_icon_scale = icon_size / 32
             NewRecipe.icons = {
-                {icon = base_icon, icon_size = icon_size, scale = 1},
+                {icon = base_icon, icon_size = 32, scale = base_icon_scale},
                 {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 3}},
                 {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 0}},
                 {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, -3}}
