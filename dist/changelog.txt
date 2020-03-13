@@ -2,7 +2,7 @@
 Version: 0.3.3
 Date: 2020-03-13
   Changes:
-    - updated info.json dependencies for Krastorio2
+    - updated info.json dependencies for Krastorio2, will need more work one I can do some testing
 ---------------------------------------------------------------------------------------------------
 Version: 0.3.2
 Date: 2020-03-07
