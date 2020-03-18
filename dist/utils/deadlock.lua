@@ -521,9 +521,9 @@ local function MakeStackedRecipe(recipe, ingredients, results)
             NewRecipe.icons = icons
             NewRecipe.icon = nil
         elseif icon and icon_size then
-            logger("5", string.format("make_stacked_icon %s %s", OrigRecipe.name, icon))
             local base_icon = "__deadlock_stacked_recipes__/graphics/blank_32.png"
             local base_icon_scale = icon_size / 32
+            logger("5", string.format("make_stacked_icon %s %s %d %f", OrigRecipe.name, icon, icon_size, base_icon_scale))
             NewRecipe.icons = {
                 {icon = base_icon, icon_size = 32, scale = base_icon_scale},
                 {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 3}},
@@ -547,7 +547,9 @@ end
 function Deadlock.MakeStackedRecipes()
     for recipe, recipe_table in pairs(data.raw.recipe) do
         logger("1", string.format("000 MakeStackedRecipes %s", recipe))
-        if not Func.starts_with(recipe, "StackedRecipe") then
+        if Func.starts_with(recipe, "StackedRecipe") or Func.starts_with(recipe, "kr-vc-") then
+            logger("1", string.format("Skipping recipe .. %s", recipe.name))
+        else
             local SomethingStacked = false
             local StackedIngredientsFound = true
             local StackedResultsFound = true
