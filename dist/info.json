@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -24,6 +24,7 @@
         "(?)Krastorio2",
         "(?)FactorioExtended-Plus-Core >= 0.4.0",
         "(?)FactorioExtended-Plus-Revisited",
+        "(?)FactorioExtended-Plus-Module",
         "(?)deadlock-compressed-titanium",
         "(?)Deadlock-SE-bridge",
         "(?)Deadlock-AAII-bridge",

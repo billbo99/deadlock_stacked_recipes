@@ -1,6 +1,7 @@
 local logger = require("utils/logging").logger
 
 require "mods.Krastorio2.data-final-fixes"
+require "mods.FactorioExtended-Plus-Module.data-final-fixes"
 
 if settings.startup["deadlock-enable-beltboxes"].value then
     local Deadlock = require("utils/deadlock")
