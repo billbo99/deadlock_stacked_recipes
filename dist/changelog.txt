@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.3.6
+Date: 2020-04-24
+  Changes:
+    - Fixed a typo in a check that allowed people to get more resources than they should on destack
+---------------------------------------------------------------------------------------------------
 Version: 0.3.5
 Date: 2020-03-28
   Changes:

@@ -62,7 +62,7 @@ function Deadlock.DensityOverride()
     if settings.startup["override_stacking_size"].value then
         local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
         for k, v in pairs(data.raw.recipe) do
-            if string.match(k, "deadlock%-stacks%-unstack%-") then
+            if Func.starts_with(k, "deadlock-stacks-unstack-") then
                 if data.raw.recipe[k].result_count and data.raw.recipe[k].result_count < deadlock_stack_size then
                     data.raw.recipe[k].result_count = deadlock_stack_size
                 end
@@ -71,7 +71,7 @@ function Deadlock.DensityOverride()
                     data.raw.recipe[k].results[1].amount = deadlock_stack_size
                 end
             end
-            if string.match(k, "deadlock%-stack%-stack%-") then
+            if Func.starts_with(k, "deadlock-stacks-stack-") then
                 if data.raw.recipe[k].ingredients then
                     if data.raw.recipe[k].ingredients[1].amount then
                         if data.raw.recipe[k].ingredients[1].amount < deadlock_stack_size then
