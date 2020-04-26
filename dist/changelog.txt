@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.1
+Date: 2020-04-26
+  Changes:
+    - Changed where I check if productivity modules effect stacked recipes
+    - Added some checks around expensive recipes
+---------------------------------------------------------------------------------------------------
 Version: 0.4.0
 Date: 2020-04-26
   Changes:
