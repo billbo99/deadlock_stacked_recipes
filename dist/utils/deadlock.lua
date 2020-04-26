@@ -1,4 +1,5 @@
 local rusty_locale = require("rusty-locale.locale")
+local rusty_locale = require("rusty-locale.locale")
 local rusty_icons = require("rusty-locale.icons")
 local rusty_recipes = require("rusty-locale.recipes")
 
@@ -61,30 +62,45 @@ end
 function Deadlock.DensityOverride()
     if settings.startup["override_stacking_size"].value then
         local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
-        for k, v in pairs(data.raw.recipe) do
+        local RecipeMultiplier = 1
+        if settings.startup["deadlock-stacking-batch-stacking"].value then
+            RecipeMultiplier = 4
+        end
+
+        for k, _ in pairs(data.raw.recipe) do
             if Func.starts_with(k, "deadlock-stacks-unstack-") then
-                if data.raw.recipe[k].result_count and data.raw.recipe[k].result_count < deadlock_stack_size then
-                    data.raw.recipe[k].result_count = deadlock_stack_size
+                if data.raw.recipe[k].result_count then
+                    local items = data.raw.recipe[k].result_count / RecipeMultiplier
+                    if items < deadlock_stack_size then
+                        data.raw.recipe[k].result_count = deadlock_stack_size * RecipeMultiplier
+                    end
                 end
 
-                if data.raw.recipe[k].results and data.raw.recipe[k].results[1].amount < deadlock_stack_size then
-                    data.raw.recipe[k].results[1].amount = deadlock_stack_size
+                if data.raw.recipe[k].results then
+                    local items = data.raw.recipe[k].results[1].amount / RecipeMultiplier
+                    if items < deadlock_stack_size then
+                        data.raw.recipe[k].results[1].amount = deadlock_stack_size * RecipeMultiplier
+                    end
                 end
             end
             if Func.starts_with(k, "deadlock-stacks-stack-") then
                 if data.raw.recipe[k].ingredients then
                     if data.raw.recipe[k].ingredients[1].amount then
-                        if data.raw.recipe[k].ingredients[1].amount < deadlock_stack_size then
-                            data.raw.recipe[k].ingredients[1].amount = deadlock_stack_size
+                        local items = data.raw.recipe[k].ingredients[1].amount / RecipeMultiplier
+                        if items < deadlock_stack_size then
+                            data.raw.recipe[k].ingredients[1].amount = deadlock_stack_size * RecipeMultiplier
                         end
-                    elseif #data.raw.recipe[k].ingredients[1] >= 2 and data.raw.recipe[k].ingredients[1][2] < deadlock_stack_size then
-                        data.raw.recipe[k].ingredients[1][2] = deadlock_stack_size
+                    elseif #data.raw.recipe[k].ingredients[1] >= 2 then
+                        local items = data.raw.recipe[k].ingredients[1][2] / RecipeMultiplier
+                        if items < deadlock_stack_size then
+                            data.raw.recipe[k].ingredients[1][2] = deadlock_stack_size * RecipeMultiplier
+                        end
                     end
                 end
             end
         end
 
-        local types = {"item", "tool", "rail-planner", "ammo"}
+        local types = {"item", "tool", "rail-planner", "ammo", "module"}
         for k, _ in pairs(data.raw.item) do
             if string.match(k, "deadlock%-stack%-") then
                 local parent_item
@@ -100,13 +116,15 @@ function Deadlock.DensityOverride()
                     local parent_stack_size = parent_item.stack_size
                     local child_stack_size = data.raw.item[k].stack_size
 
-                    stack_size = deadlock_stack_size
-                    if parent_stack_size > deadlock_stack_size then
-                        stack_size = parent_stack_size
-                    end
-                    if child_stack_size < deadlock_stack_size then
-                        stack_size = deadlock_stack_size
-                    end
+                    stack_size = parent_stack_size
+                    -- stack_size = deadlock_stack_size
+                    -- if parent_stack_size > deadlock_stack_size then
+                    --     stack_size = parent_stack_size
+                    -- end
+                    -- if child_stack_size < deadlock_stack_size then
+                    --     -- stack_size = deadlock_stack_size
+                    --     stack_size = parent_stack_size
+                    -- end
 
                     data.raw.item[k].stack_size = stack_size
                     data.raw.item[k].localised_name[3] = deadlock_stack_size

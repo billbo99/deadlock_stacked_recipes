@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.0
+Date: 2020-04-26
+  Changes:
+    - When using "override_stacking_size" stacked items will match the parents stack size
+    - Fixed loss of items when using "batch stacking"
+    - Modules now stack in correct ammounts when using "override_stacking_size"
+---------------------------------------------------------------------------------------------------
 Version: 0.3.6
 Date: 2020-04-24
   Changes:
