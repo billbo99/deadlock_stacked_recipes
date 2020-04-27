@@ -587,7 +587,11 @@ function Deadlock.MakeStackedRecipes()
             elseif recipe_table.normal then
                 logger("2", string.format("recipe_table.normal matched for %s", recipe))
                 ingredients = recipe_table.normal.ingredients
-                expensive_ingredients = recipe_table.expensive.ingredients or recipe_table.normal.ingredients
+                if recipe.expensive and recipe.expensive.ingredients then
+                    expensive_ingredients = recipe.expensive.ingredients
+                else
+                    expensive_ingredients = recipe_table.normal.ingredients
+                end
             else
                 logger("1", string.format("nothing matched for %s", recipe))
                 ingredients = nil
