@@ -307,27 +307,31 @@ local function ReplaceResult(results)
         else
             name = result[1]
         end
-        local StackedIngredient = string.format("deadlock-stack-%s", name)
-        if data.raw.item[StackedIngredient] then
-            if result.name then
-                result.name = StackedIngredient
-            else
-                result[1] = StackedIngredient
-            end
+        if Func.starts_with(name, "deadlock-stack-") then
+            logger("3", string.format("Result .. %s .. is already a stacked item", name))
         else
-            if result.type == "fluid" then
-                local multiplier = settings.startup["deadlock-stack-size"].value
-                if result.amount then
-                    result.amount = result.amount * multiplier
-                end
-                if result.amount_min then
-                    result.amount_min = result.amount_min * multiplier
-                end
-                if result.amount_max then
-                    result.amount_max = result.amount_max * multiplier
+            local StackedIngredient = string.format("deadlock-stack-%s", name)
+            if data.raw.item[StackedIngredient] then
+                if result.name then
+                    result.name = StackedIngredient
+                else
+                    result[1] = StackedIngredient
                 end
             else
-                bAllGood = false
+                if result.type == "fluid" then
+                    local multiplier = settings.startup["deadlock-stack-size"].value
+                    if result.amount then
+                        result.amount = result.amount * multiplier
+                    end
+                    if result.amount_min then
+                        result.amount_min = result.amount_min * multiplier
+                    end
+                    if result.amount_max then
+                        result.amount_max = result.amount_max * multiplier
+                    end
+                else
+                    bAllGood = false
+                end
             end
         end
     end

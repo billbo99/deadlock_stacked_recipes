@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.4.2
+Date: 2020-04-27
+  Bugfix:
+    - Issue with handling expensive recipes cause productivity rules not to be copied to stacked
+      recipes
+---------------------------------------------------------------------------------------------------
 Version: 0.4.1
 Date: 2020-04-26
   Changes:
