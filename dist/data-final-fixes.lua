@@ -14,4 +14,6 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     Deadlock.FixResearchTree()
 end
 
+require "mods.CompressedFluids.data-final-fixes"
+
 logger("9", serpent.block(data.raw))

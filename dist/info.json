@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "0.4.3",
+    "version": "0.5.0",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -11,6 +11,7 @@
         "stdlib >= 1.4.0",
         "deadlock-beltboxes-loaders >= 2.3.0",
         "DeadlockStackingForVanilla",
+        "?CompressedFluids",
         "!deadlock-experiments",
         "(?)space-exploration >= 0.2.2",
         "(?)space-exploration-postprocess",
