@@ -47,4 +47,11 @@ function Func.isAdmin(player)
     end
 end
 
+function Func.is_empty(t)
+    for _, _ in pairs(t) do
+        return false
+    end
+    return true
+end
+
 return Func

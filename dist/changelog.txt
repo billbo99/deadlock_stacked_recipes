@@ -1,4 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.2
+Date: 2020-04-29
+  Changes:
+    - Had to deal with some issues around "high-pressure" fluids and temperatures
+---------------------------------------------------------------------------------------------------
+Version: 0.5.1
+Date: 2020-04-29
+  Changes:
+    - Added a migration script to ensure the "high-pressure" recipes get enabled if technology
+      already resarched
+    - Added some extra checks around when "main_product" is declared
+---------------------------------------------------------------------------------------------------
 Version: 0.5.0
 Date: 2020-04-29
   Changes:
