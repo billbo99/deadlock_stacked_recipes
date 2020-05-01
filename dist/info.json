@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "0.5.1",
+    "version": "0.5.3",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -13,7 +13,8 @@
         "DeadlockStackingForVanilla",
         "?CompressedFluids",
         "!deadlock-experiments",
-        "(?)space-exploration >= 0.2.2",
+        "(?)aai-industry",
+        "(?)space-exploration",
         "(?)space-exploration-postprocess",
         "(?)bobores >= 0.18.0",
         "(?)bobplates >= 0.18.1",

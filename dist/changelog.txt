@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.3
+Date: 2020-05-01
+  Changes:
+    - Fluid only recipes using "high-pressure" fluids now have their crafting time increased to
+      match by default with the "high-pressure" compression factor, but there is a setting that
+      allows this to be manually changed.  The idea for this is for when you have so many beacon
+      and speed modules that a regular craft would be more than the game limit of 1 per tick.
+---------------------------------------------------------------------------------------------------
 Version: 0.5.2
 Date: 2020-04-29
   Changes:
