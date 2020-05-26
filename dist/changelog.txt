@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.4
+Date: 2020-05-01
+  Changes:
+    - Added Stacked Intermedites for Space Exploration 0.3.x if Deadlock-SE-bridge does not
+      provide them.
+---------------------------------------------------------------------------------------------------
 Version: 0.5.3
 Date: 2020-05-01
   Changes:
