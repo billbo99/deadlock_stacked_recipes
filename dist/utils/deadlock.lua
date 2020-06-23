@@ -329,6 +329,9 @@ local function ReplaceResult(results)
                     if result.amount_max then
                         result.amount_max = result.amount_max * multiplier
                     end
+                    if result.catalyst_amount then
+                        result.catalyst_amount = result.catalyst_amount * multiplier
+                    end
                 else
                     bAllGood = false
                 end

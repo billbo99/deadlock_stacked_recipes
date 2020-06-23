@@ -27,6 +27,9 @@ if mods["CompressedFluids"] then
             if item.amount_max then
                 item.amount_max = item.amount_max * scale_up_factor
             end
+            if item.catalyst_amount then
+                item.catalyst_amount = item.catalyst_amount * scale_up_factor
+            end
         end
     end
 
@@ -93,6 +96,9 @@ if mods["CompressedFluids"] then
                             if item.amount_max then
                                 item.amount_max = item.amount_max / settings.startup["fluid-compression-rate"].value
                                 flag = true
+                            end
+                            if item.catalyst_amount then
+                                item.catalyst_amount = item.catalyst_amount / settings.startup["fluid-compression-rate"].value
                             end
                         elseif Func.starts_with(item.name, "high-pressure") then
                             -- do nothing
