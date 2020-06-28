@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "0.5.6",
+    "version": "0.5.7",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -31,6 +31,7 @@
         "(?)Deadlock-AAII-bridge",
         "(?)DeadlocksStackingForPyanadon",
         "(?)DeadlockStackingForKrastorioLegacy",
+        "(?)DeadlockStackingForKrastorio2",
         "(?)deadlock-stacking-crating-bobs >= 0.7.6"
     ],
     "description": "This mod makes recipes using stacked ingredients to produce stacked output.  The reason for this mod is I have found some mod packs can end up with major speed boost that even loaders are unable to provide the resources fast enough"
