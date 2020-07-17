@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.5.9
+Date: 2020-07-17
+  Changes:
+    - Fix for where a "normal" recipe was defined but no "expensive" recipe was defined.
+---------------------------------------------------------------------------------------------------
+Version: 0.5.8
+Date: 2020-07-14
+  Changes:
+    - DeadlockStackingForVanilla is now an optional dependency
+    - Added hidden dependency for DeadlockStackingForBobs to ensure loading order
+---------------------------------------------------------------------------------------------------
 Version: 0.5.7
 Date: 2020-06-28
   Changes:
