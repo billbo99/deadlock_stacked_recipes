@@ -115,7 +115,9 @@ if mods["CompressedFluids"] then
     end
 
     local function parse_recipes()
-        log(serpent.block(data.raw.recipe["advanced-oil-processing"]))
+        local exclude_category = {"mining-depot", "fluid-decompressing", "fluid-compressing"}
+        local exclude_subgroup = {"empty-barrel", "fill-barrel"}
+
         local parsed_recipes = {}
         local raw_recipes = util.table.deepcopy(data.raw.recipe)
         for _, recipe_table in pairs(raw_recipes) do
@@ -123,8 +125,8 @@ if mods["CompressedFluids"] then
             local rv1b, rv2b, rv3b, rv4b
             local ingredients, results, expensive_ingredients, expensive_results
 
-            if recipe_table.category == "fluid-decompressing" or recipe_table.category == "fluid-compressing" or recipe_table.subgroup == "empty-barrel" or recipe_table.subgroup == "fill-barrel" then
-                -- do nothing
+            if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) then
+                log(string.format("Skipping .. %s", recipe_table.name))
             else
                 Recipes.standardize_recipe(recipe_table)
 

@@ -2,6 +2,7 @@ local rusty_locale = require("rusty-locale.locale")
 local rusty_locale = require("rusty-locale.locale")
 local rusty_icons = require("rusty-locale.icons")
 local rusty_recipes = require("rusty-locale.recipes")
+local rusty_prototypes = require("rusty-locale.prototypes")
 
 local _Data = require("__stdlib__/stdlib/data/data")
 local _Recipe = require("__stdlib__/stdlib/data/recipe")
@@ -734,6 +735,13 @@ function Deadlock.SubGroups()
                 end
                 if data.raw.item[parent_name] and data.raw.item[parent_name].subgroup then
                     sub_group = data.raw.item[parent_name].subgroup
+                end
+                if sub_group == "misc" then
+                    for _, data in pairs(rusty_prototypes.find_by_name(parent_name)) do
+                        if data.subgroup then
+                            sub_group = data.subgroup
+                        end
+                    end
                 end
 
                 MakeSubGroup(sub_group)
