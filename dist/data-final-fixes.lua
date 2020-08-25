@@ -11,7 +11,7 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     Deadlock.MakeStackedRecipes()
     Deadlock.DensityOverride()
     Deadlock.FixLocalisedNames()
-    Deadlock.SubGroups()
+    -- Deadlock.SubGroups()
     Deadlock.FixResearchTree()
 end
 

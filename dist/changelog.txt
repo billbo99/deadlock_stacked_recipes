@@ -1,4 +1,55 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2020-08-25
+  Changes:
+    - Roll to v1.0.0 to match game
+    - Made rusty-locale an external dependency
+---------------------------------------------------------------------------------------------------
+Version: 0.6.6
+Date: 2020-08-15
+  Changes:
+    - Excluded any recipe starting with "spidertron-remote"
+---------------------------------------------------------------------------------------------------
+Version: 0.6.5
+Date: 2020-08-14
+  Changes:
+    - Excluded the recipe "spidertron-remote" from compressed fluids sub-module
+---------------------------------------------------------------------------------------------------
+Version: 0.6.4
+Date: 2020-08-14
+  Changes:
+    - Excluded the recipe "spidertron-remote"
+---------------------------------------------------------------------------------------------------
+Version: 0.6.3
+Date: 2020-08-04
+  Changes:
+    - Fixed a bug found by eyekoms ... deadlock.lua:171
+---------------------------------------------------------------------------------------------------
+Version: 0.6.2
+Date: 2020-08-02
+  Changes:
+    - Changed DSR layer png to be horizonal with a white border to make it readable.
+---------------------------------------------------------------------------------------------------
+Version: 0.6.1
+Date: 2020-08-02
+  Bugfix:
+    - Had an issue with fluids from "Endgame Combat"
+---------------------------------------------------------------------------------------------------
+Version: 0.6.0
+Date: 2020-08-01
+  Changes:
+    - Changed the layout of the recipes so they are on seperate lines, but in the same TAB as the original
+---------------------------------------------------------------------------------------------------
+Version: 0.5.13
+Date: 2020-07-24
+  Changes:
+    - Fixed some logic around 'main_product' properties
+---------------------------------------------------------------------------------------------------
+Version: 0.5.12
+Date: 2020-07-23
+  Changes:
+    - Added hidden dependency for DeadlockStackingForAngles to ensure loading order
+---------------------------------------------------------------------------------------------------
 Version: 0.5.11
 Date: 2020-07-22
   Changes:

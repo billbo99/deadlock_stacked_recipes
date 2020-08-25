@@ -1,8 +1,9 @@
 local Func = require("utils.func")
 local Recipes = require("utils.recipes")
-local rusty_locale = require("rusty-locale.locale")
-local rusty_icons = require("rusty-locale.icons")
-local rusty_recipes = require("rusty-locale.recipes")
+local rusty_locale = require("__rusty-locale__.locale")
+local rusty_icons = require("__rusty-locale__.icons")
+local rusty_recipes = require("__rusty-locale__.recipes")
+local rusty_prototypes = require("__rusty-locale__.prototypes")
 
 if mods["CompressedFluids"] then
     local hp_icon = {icon = "__CompressedFluids__/graphics/icons/overlay-HP-group.png", icon_size = 64, tint = {r = 0, g = 1, b = 0}}
@@ -14,6 +15,31 @@ if mods["CompressedFluids"] then
         else
             scale_up_factor = settings.startup["fluid-compression-rate"].value
         end
+    end
+
+    local function fix_hp_fluid_recipe_order()
+        for fluid, fluid_table in pairs(data.raw.fluid) do
+            if Func.starts_with(fluid, "high-pressure-") then
+                fluid_table.order = string.gsub(fluid_table.order, "^a%-", "")
+            end
+        end
+    end
+
+    local function MakeSubGroup(name)
+        local current_group = data.raw["item-subgroup"][name].group
+        local current_order = data.raw["item-subgroup"][name].order
+        local new_subgroup
+        local subgroup
+
+        new_subgroup = name .. "HP"
+        if not data.raw["item-subgroup"][new_subgroup] then
+            subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "HP"}
+        end
+
+        if subgroup then
+            data:extend({subgroup})
+        end
+        return new_subgroup
     end
 
     local function scale_up_fluid_only_recipe(items)
@@ -125,6 +151,7 @@ if mods["CompressedFluids"] then
             local rv1b, rv2b, rv3b, rv4b
             local ingredients, results, expensive_ingredients, expensive_results
 
+            -- if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) or Func.starts_with(recipe_table.name, "spidertron-remote") then
             if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) then
                 log(string.format("Skipping .. %s", recipe_table.name))
             else
@@ -207,6 +234,44 @@ if mods["CompressedFluids"] then
 
                     local orig_name = recipe_table.name
                     recipe_table.name = string.format("DSR_HighPressure-%s", recipe_table.name)
+
+                    -- fixing subgroups
+                    if settings.startup["dsr_new_subgroup_placement"].value then
+                        local subgroup
+                        local order
+                        local main_product = rusty_recipes.get_main_product(recipe_table)
+
+                        if main_product then
+                            if not data.raw[main_product.type][main_product.name] then
+                                local prototypes = rusty_prototypes.find_by_name(main_product.name)
+                                for k, v in pairs(prototypes) do
+                                    if data.raw[k][v.name].subgroup then
+                                        subgroup = data.raw[k][v.name].subgroup
+                                        order = order or data.raw[k][v.name].order
+                                    end
+                                end
+                            else
+                                subgroup = data.raw[main_product.type][main_product.name].subgroup
+                                order = order or data.raw[main_product.type][main_product.name].order
+                            end
+                        end
+
+                        if recipe_table.subgroup then
+                            subgroup = recipe_table.subgroup
+                            order = recipe_table.order or order
+                        elseif not subgroup then
+                            log("hmm")
+                        end
+
+                        subgroup = MakeSubGroup(subgroup)
+                        if subgroup then
+                            recipe_table.subgroup = subgroup
+                        end
+                        if order then
+                            recipe_table.order = order
+                        end
+                    end
+
                     data:extend({recipe_table})
 
                     CheckProductivity(orig_name, recipe_table.name)
@@ -218,6 +283,9 @@ if mods["CompressedFluids"] then
         return parsed_recipes
     end
 
+    if settings.startup["dsr_new_subgroup_placement"].value then
+        fix_hp_fluid_recipe_order()
+    end
     local parsed_recipes = parse_recipes()
     add_recipes_to_technologies(parsed_recipes)
 end

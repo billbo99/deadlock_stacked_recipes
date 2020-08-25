@@ -1,33 +1,15 @@
-local rusty_locale = require("rusty-locale.locale")
-local rusty_locale = require("rusty-locale.locale")
-local rusty_icons = require("rusty-locale.icons")
-local rusty_recipes = require("rusty-locale.recipes")
-local rusty_prototypes = require("rusty-locale.prototypes")
+local rusty_locale = require("__rusty-locale__.locale")
+local rusty_icons = require("__rusty-locale__.icons")
+local rusty_recipes = require("__rusty-locale__.recipes")
+local rusty_prototypes = require("__rusty-locale__.prototypes")
 
 local _Data = require("__stdlib__/stdlib/data/data")
 local _Recipe = require("__stdlib__/stdlib/data/recipe")
 
-local Locale = require("utils/locale")
 local logger = require("utils/logging").logger
 
 local Func = require("utils.func")
 local Deadlock = {}
-
--- local function get_item_localised_name(item_name)
---     if data.raw.item[item_name] and data.raw.item[item_name].localised_name then
---         return data.raw.item[item_name].localised_name
---     else
---         return {"item-name." .. item_name}
---     end
--- end
-
--- local function get_recipe_localised_name(recipe_name)
---     if data.raw.recipe[recipe_name] and data.raw.recipe[recipe_name].localised_name then
---         return data.raw.recipe[recipe_name].localised_name
---     else
---         return {"recipe-name." .. recipe_name}
---     end
--- end
 
 local function FixRecipeLocalisedNames()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
@@ -36,7 +18,8 @@ local function FixRecipeLocalisedNames()
             local parent_name = string.sub(recipe_name, 15)
 
             local locale = rusty_locale.of(data.raw.recipe[parent_name])
-            recipe_table.localised_name = {"recipe-name.deadlock-stacking-stack", locale.name}
+            -- recipe_table.localised_name = {"recipe-name.deadlock-stacking-stack", locale.name}
+            recipe_table.localised_name = {"recipe-name.DSR_Recipe", locale.name}
             logger("2", string.format("FixRecipeLocalisedNames .. %s .. %s", recipe_name, serpent.block(locale.name)))
         end
     end
@@ -101,7 +84,7 @@ function Deadlock.DensityOverride()
             end
         end
 
-        local types = {"item", "tool", "rail-planner", "ammo", "module"}
+        local types = {"item", "tool", "rail-planner", "ammo", "module", "capsule"}
         for k, _ in pairs(data.raw.item) do
             if string.match(k, "deadlock%-stack%-") then
                 local parent_item
@@ -174,10 +157,27 @@ function Deadlock.FixResearchTree()
     end
 end
 
-local function MakeSubGroup(sub_group)
-    if not data.raw["item-subgroup"]["Stacked-" .. sub_group] then
-        data:extend({{type = "item-subgroup", name = "Stacked-" .. sub_group, group = "Stacked_Recipes", order = "Stacked-" .. sub_group}})
+local function MakeSubGroup(name, order)
+    local current_group = data.raw["item-subgroup"][name].group
+    local current_order = data.raw["item-subgroup"][name].order or order
+    local new_subgroup
+    local subgroup
+
+    if settings.startup["dsr_new_subgroup_placement"].value then
+        new_subgroup = name .. "Stacked"
+        if not data.raw["item-subgroup"][new_subgroup] then
+            subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
+        end
+    else
+        new_subgroup = "Stacked-" .. name
+        if not data.raw["item-subgroup"][new_subgroup] then
+            subgroup = {type = "item-subgroup", name = new_subgroup, group = "Stacked_Recipes", order = new_subgroup}
+        end
     end
+    if subgroup then
+        data:extend({subgroup})
+    end
+    return new_subgroup
 end
 
 -- local function MakeDeadlockItem(name, deadlock_tier, sub_group, type)
@@ -480,13 +480,13 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         end
     end
 
-    if NewRecipe.normal and NewRecipe.normal.main_product and data.raw.item[NewRecipe.normal.main_product] then
+    if NewRecipe.normal and NewRecipe.normal.main_product and data.raw.item[string.format("deadlock-stack-%s", NewRecipe.normal.main_product)] then
         StackedProduct = string.format("deadlock-stack-%s", NewRecipe.normal.main_product)
         if data.raw.item[StackedProduct] then
             NewRecipe.normal.main_product = StackedProduct
         end
     end
-    if NewRecipe.expensive and NewRecipe.expensive.main_product and data.raw.item[NewRecipe.expensive.main_product] then
+    if NewRecipe.expensive and NewRecipe.expensive.main_product and data.raw.item[string.format("deadlock-stack-%s", NewRecipe.expensive.main_product)] then
         StackedProduct = string.format("deadlock-stack-%s", NewRecipe.expensive.main_product)
         if data.raw.item[StackedProduct] then
             NewRecipe.expensive.main_product = StackedProduct
@@ -519,44 +519,59 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     local icon = nil
     local icon_size = nil
     local icons = nil
-    local make_stacked_icon = false
+    local base_icon = "__deadlock_stacked_recipes__/graphics/blank_64.png"
+    local dsr_icon = "__deadlock_stacked_recipes__/graphics/DSR_64_v5.png"
+    local recipe_icons = rusty_icons.of_recipe(data.raw.recipe[OrigRecipe.name])
 
     -- First look to see if recipe has an icon defined
+    NewRecipe.icons = {}
+    table.insert(NewRecipe.icons, {icon = base_icon, icon_size = 64})
     if data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icons then
-        -- Look at recipe for an icon
-        make_stacked_icon = true
-        icons = data.raw.recipe[OrigRecipe.name].icons
-        for _, _icon in pairs(icons) do
-            if string.find(string.lower(_icon.icon), "stacked") then
-                make_stacked_icon = false
-            end
+        for _, layer in pairs(data.raw.recipe[OrigRecipe.name].icons) do
+            table.insert(NewRecipe.icons, layer)
         end
     elseif data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icon then
-        -- Look at recipe for an icon
-        make_stacked_icon = true
-        icon = data.raw.recipe[OrigRecipe.name].icon
-        icon_size = data.raw.recipe[OrigRecipe.name].icon_size
-        if string.find(string.lower(icon), "stacked") then
-            make_stacked_icon = false
+        table.insert(NewRecipe.icons, {icon = data.raw.recipe[OrigRecipe.name].icon, icon_size = data.raw.recipe[OrigRecipe.name].icon_size})
+    elseif #recipe_icons > 0 then
+        for _, layer in pairs(recipe_icons) do
+            table.insert(NewRecipe.icons, layer)
+        end
+    end
+    table.insert(NewRecipe.icons, {icon = dsr_icon, icon_size = 64})
+    NewRecipe.icon = nil
+
+    local subgroup
+    local order
+    local main_product = rusty_recipes.get_main_product(data.raw.recipe[OrigRecipe.name])
+
+    if main_product then
+        if not data.raw[main_product.type][main_product.name] then
+            local prototypes = rusty_prototypes.find_by_name(main_product.name)
+            for k, v in pairs(prototypes) do
+                if data.raw[k][v.name].subgroup then
+                    subgroup = data.raw[k][v.name].subgroup
+                    order = order or data.raw[k][v.name].order
+                end
+            end
+        else
+            subgroup = data.raw[main_product.type][main_product.name].subgroup
+            order = order or data.raw[main_product.type][main_product.name].order
+            if not subgroup and main_product.type == "fluid" then
+                subgroup = "fluid"
+            end
         end
     end
 
-    if make_stacked_icon then
-        if icons then
-            NewRecipe.icons = icons
-            NewRecipe.icon = nil
-        elseif icon and icon_size then
-            local base_icon = "__deadlock_stacked_recipes__/graphics/blank_32.png"
-            local base_icon_scale = icon_size / 32
-            logger("5", string.format("make_stacked_icon %s %s %d %f", OrigRecipe.name, icon, icon_size, base_icon_scale))
-            NewRecipe.icons = {
-                {icon = base_icon, icon_size = 32, scale = base_icon_scale},
-                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 3}},
-                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, 0}},
-                {icon = icon, icon_size = icon_size, scale = 0.85, shift = {0, -3}}
-            }
-            NewRecipe.icon = nil
-        end
+    if data.raw.recipe[OrigRecipe.name].subgroup then
+        subgroup = data.raw.recipe[OrigRecipe.name].subgroup
+        order = data.raw.recipe[OrigRecipe.name].order or order
+    elseif not subgroup then
+        log("hmm")
+    end
+
+    NewRecipe.order = order
+    if subgroup then
+        NewRecipe.subgroup = MakeSubGroup(subgroup, order)
     end
 
     if NewRecipeResultsFlag then
@@ -573,7 +588,7 @@ end
 function Deadlock.MakeStackedRecipes()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
         logger("1", string.format("000 MakeStackedRecipes %s", recipe_name))
-        if Func.starts_with(recipe_name, "StackedRecipe") or Func.starts_with(recipe_name, "kr-vc-") then
+        if Func.starts_with(recipe_name, "StackedRecipe") or Func.starts_with(recipe_name, "kr-vc-") or Func.starts_with(recipe_name, "deadlock-stacks-stack") or Func.starts_with(recipe_name, "deadlock-stacks-unstack") or Func.starts_with(recipe_name, "spidertron-remote") then
             logger("1", string.format("Skipping recipe .. %s", recipe_name.name))
         else
             local SomethingStacked = false
