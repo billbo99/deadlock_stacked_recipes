@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2020-08-26
+  Changes:
+    - Added on_configuration_changed function to check recipes are enabled after mod upgrades or setting changes
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2020-08-25
   Changes:
