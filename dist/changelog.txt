@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 2020-08-26
+  Features:
+    - Added an experimental setting to lock all stacked recipes behind beacon research.  This was requested so that people dont create stacked smelting blocks from the start, and only used the stacked recipes for when they were original meant to be used.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.1
 Date: 2020-08-26
   Changes:

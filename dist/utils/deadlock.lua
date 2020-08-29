@@ -43,6 +43,65 @@ function Deadlock.FixLocalisedNames()
     FixRecipeLocalisedNames()
 end
 
+function Deadlock.ReOrderTechnologyBehindBeacons()
+    local rank = {
+        ["automation-science-pack"] = 1,
+        ["logistic-science-pack"] = 2,
+        ["military-science-pack"] = 3,
+        ["chemical-science-pack"] = 4,
+        ["production-science-pack"] = 5,
+        ["utility-science-pack"] = 6,
+        ["space-science-pack"] = 7
+    }
+
+    local track_touched = {}
+
+    for _, tech in pairs(data.raw.technology) do
+        if Func.starts_with(tech.name, "dsr-technology") then
+            -- skip
+        else
+            local max_pack = 0
+            if tech.unit and tech.unit.ingredients then
+                for _, row in pairs(tech.unit.ingredients) do
+                    local pack = row[1]
+                    if rank[pack] and rank[pack] > max_pack then
+                        max_pack = rank[pack]
+                    end
+                end
+            end
+
+            local dsr_tech = "dsr-technology-" .. tostring(max_pack)
+
+            if tech.effects then
+                local effects = {}
+                for _, effect in pairs(tech.effects) do
+                    if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe-") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
+                        table.insert(data.raw.technology[dsr_tech].effects, {type = "unlock-recipe", recipe = effect.recipe})
+                        track_touched[effect.recipe] = true
+                    else
+                        table.insert(effects, effect)
+                    end
+                end
+                tech.effects = effects
+            end
+        end
+    end
+
+    for _, recipe in pairs(data.raw.recipe) do
+        log(recipe.name)
+        if (Func.starts_with(recipe.name, "StackedRecipe-") or Func.starts_with(recipe.name, "DSR_HighPressure-")) and not track_touched[recipe.name] then
+            table.insert(data.raw.technology["dsr-technology-1"].effects, {type = "unlock-recipe", recipe = recipe.name})
+            if recipe.normal then
+                recipe.normal.enabled = false
+            end
+            if recipe.expensive then
+                recipe.expensive.enabled = false
+            end
+            recipe.enabled = false
+        end
+    end
+end
+
 function Deadlock.DensityOverride()
     if settings.startup["override_stacking_size"].value then
         local deadlock_stack_size = settings.startup["deadlock-stack-size"].value

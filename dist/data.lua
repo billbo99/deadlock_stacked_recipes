@@ -1,6 +1,7 @@
 log("data-start")
 
 require("data/group.lua")
+require("data/technology.lua")
 -- require("mods/vanilla/data.lua")
 -- require("mods/DyWorld/data.lua")
 -- require("mods/Krastorio/data.lua")
