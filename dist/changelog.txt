@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2020-09-01
+  Bugfixes:
+    - on_configuration_changed was not looking for High Pressure Stacked Recipes in its checks.
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2020-08-26
   Features:

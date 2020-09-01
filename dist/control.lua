@@ -12,7 +12,7 @@ script.on_configuration_changed(
                 for _, tech in pairs(force.technologies) do
                     if tech.researched then
                         for _, effect in pairs(tech.effects) do
-                            if effect.type == "unlock-recipe" and Func.starts_with(effect.recipe, "StackedRecipe") then
+                            if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
                                 recipes[effect.recipe].enabled = true
                                 recipes[effect.recipe].reload()
                             end
