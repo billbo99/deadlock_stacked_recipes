@@ -88,7 +88,6 @@ function Deadlock.ReOrderTechnologyBehindBeacons()
     end
 
     for _, recipe in pairs(data.raw.recipe) do
-        log(recipe.name)
         if (Func.starts_with(recipe.name, "StackedRecipe-") or Func.starts_with(recipe.name, "DSR_HighPressure-")) and not track_touched[recipe.name] then
             table.insert(data.raw.technology["dsr-technology-1"].effects, {type = "unlock-recipe", recipe = recipe.name})
             if recipe.normal then

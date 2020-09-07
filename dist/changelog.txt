@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2020-09-01
+  Changes:
+    - if Kythbloods_Stacked_Mining & Mining_Drones installed change amount of resources cached in depot.
+    - Removed some log messages
+---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2020-09-01
   Bugfixes:

@@ -153,7 +153,7 @@ if mods["CompressedFluids"] then
 
             -- if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) or Func.starts_with(recipe_table.name, "spidertron-remote") then
             if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) then
-                log(string.format("Skipping .. %s", recipe_table.name))
+                -- log(string.format("Skipping .. %s", recipe_table.name))
             else
                 Recipes.standardize_recipe(recipe_table)
 

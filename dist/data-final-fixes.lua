@@ -13,6 +13,7 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     Deadlock.FixResearchTree()
 end
 
+require "mods.Kythbloods_Stacked_Mining.data-final-fixes"
 require "mods.CompressedFluids.data-final-fixes"
 
 if settings.startup["DSR_recipes_after_beacons"].value then
