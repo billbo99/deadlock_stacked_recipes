@@ -30,6 +30,7 @@
         "?DeadlocksStackingForPyanadon",
         "?DeadlockStackingForKrastorioLegacy",
         "?DeadlockStackingForKrastorio2",
+        "?DeadlockStackingForOmnimatter",
         "(?)deadlock-stacking-crating-bobs >= 0.7.6"
     ],
     "description": "This mod makes recipes using stacked ingredients to produce stacked output.  The reason for this mod is I have found some mod packs can end up with major speed boost that even loaders are unable to provide the resources fast enough"

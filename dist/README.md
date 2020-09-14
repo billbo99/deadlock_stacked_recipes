@@ -26,6 +26,7 @@ Schall Alien Loot | https://mods.factorio.com/mod/DeadlockStackingForSchallAlien
 Necromant | https://mods.factorio.com/mod/DeadlockStackingForNecromant
 The Dead Burn v17 | https://mods.factorio.com/mod/DeadlockStackingForTheDeadBurn
 Krastorio Legacy | https://mods.factorio.com/mod/DeadlockStackingForKrastorioLegacy
+Omnimatter | https://mods.factorio.com/mod/DeadlockStackingForOmnimatter
 
 
 ## Anything else
