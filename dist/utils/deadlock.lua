@@ -45,13 +45,59 @@ end
 
 function Deadlock.ReOrderTechnologyBehindBeacons()
     local rank = {
-        ["automation-science-pack"] = 1,
-        ["logistic-science-pack"] = 2,
-        ["military-science-pack"] = 3,
-        ["chemical-science-pack"] = 4,
-        ["production-science-pack"] = 5,
-        ["utility-science-pack"] = 6,
-        ["space-science-pack"] = 7
+        -- Vanilla
+        ["automation-science-pack"] = 10,
+        ["logistic-science-pack"] = 20,
+        ["military-science-pack"] = 30,
+        ["chemical-science-pack"] = 40,
+        ["production-science-pack"] = 50,
+        ["utility-science-pack"] = 9999,
+        ["space-science-pack"] = 9999,
+        --K2
+        ["basic-tech-card"] = 5,
+        ["matter-tech-card"] = 9999,
+        ["advanced-tech-card"] = 9999,
+        ["singularity-tech-card"] = 9999,
+        -- SE
+        ["se-rocket-science-pack"] = 9999,
+        ["se-astronomic-science-pack-1"] = 9999,
+        ["se-astronomic-science-pack-2"] = 9999,
+        ["se-astronomic-science-pack-3"] = 9999,
+        ["se-astronomic-science-pack-4"] = 9999,
+        ["se-biological-science-pack-1"] = 9999,
+        ["se-biological-science-pack-2"] = 9999,
+        ["se-biological-science-pack-3"] = 9999,
+        ["se-biological-science-pack-4"] = 9999,
+        ["se-deep-space-science-pack-1"] = 9999,
+        ["se-deep-space-science-pack-2"] = 9999,
+        ["se-deep-space-science-pack-3"] = 9999,
+        ["se-deep-space-science-pack-4"] = 9999,
+        ["se-energy-science-pack-1"] = 9999,
+        ["se-energy-science-pack-2"] = 9999,
+        ["se-energy-science-pack-3"] = 9999,
+        ["se-energy-science-pack-4"] = 9999,
+        ["se-material-science-pack-1"] = 9999,
+        ["se-material-science-pack-2"] = 9999,
+        ["se-material-science-pack-3"] = 9999,
+        ["se-material-science-pack-4"] = 9999,
+        -- Bobs
+        ["advanced-logistic-science-pack"] = 9999,
+        ["science-pack-gold"] = 9999,
+        ["alien-science-pack"] = 9999,
+        ["alien-science-pack-blue"] = 9999,
+        ["alien-science-pack-green"] = 9999,
+        ["alien-science-pack-orange"] = 9999,
+        ["alien-science-pack-purple"] = 9999,
+        ["alien-science-pack-red"] = 9999,
+        ["alien-science-pack-yellow"] = 9999,
+        ["effectivity-processor"] = 9999,
+        ["module-case"] = 9999,
+        ["module-circuit-board"] = 9999,
+        ["pollution-clean-processor"] = 9999,
+        ["pollution-create-processor"] = 9999,
+        ["productivity-processor"] = 9999,
+        ["speed-processor"] = 9999,
+        ["token-bio"] = 9999
     }
 
     local track_touched = {}
@@ -63,33 +109,48 @@ function Deadlock.ReOrderTechnologyBehindBeacons()
             local max_pack = 0
             if tech.unit and tech.unit.ingredients then
                 for _, row in pairs(tech.unit.ingredients) do
-                    local pack = row[1]
+                    local pack = row[1] or row.name
                     if rank[pack] and rank[pack] > max_pack then
                         max_pack = rank[pack]
                     end
                 end
             end
 
-            local dsr_tech = "dsr-technology-" .. tostring(max_pack)
-
-            if tech.effects then
-                local effects = {}
-                for _, effect in pairs(tech.effects) do
-                    if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe-") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
-                        table.insert(data.raw.technology[dsr_tech].effects, {type = "unlock-recipe", recipe = effect.recipe})
-                        track_touched[effect.recipe] = true
-                    else
-                        table.insert(effects, effect)
+            if max_pack ~= 9999 then
+                local dsr_tech
+                for k, v in pairs(rank) do
+                    if v == max_pack then
+                        dsr_tech = "dsr-technology-" .. k
                     end
                 end
-                tech.effects = effects
+
+                if tech.effects then
+                    local effects = {}
+                    for _, effect in pairs(tech.effects) do
+                        if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe-") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
+                            table.insert(data.raw.technology[dsr_tech].effects, {type = "unlock-recipe", recipe = effect.recipe})
+                            track_touched[effect.recipe] = true
+                        else
+                            table.insert(effects, effect)
+                        end
+                    end
+                    tech.effects = effects
+                end
+            else
+                if tech.effects then
+                    for _, effect in pairs(tech.effects) do
+                        if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe-") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
+                            track_touched[effect.recipe] = true
+                        end
+                    end
+                end
             end
         end
     end
 
     for _, recipe in pairs(data.raw.recipe) do
         if (Func.starts_with(recipe.name, "StackedRecipe-") or Func.starts_with(recipe.name, "DSR_HighPressure-")) and not track_touched[recipe.name] then
-            table.insert(data.raw.technology["dsr-technology-1"].effects, {type = "unlock-recipe", recipe = recipe.name})
+            table.insert(data.raw.technology["dsr-technology-automation-science-pack"].effects, {type = "unlock-recipe", recipe = recipe.name})
             if recipe.normal then
                 recipe.normal.enabled = false
             end
@@ -589,7 +650,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
             table.insert(NewRecipe.icons, layer)
         end
     elseif data.raw.recipe[OrigRecipe.name] and data.raw.recipe[OrigRecipe.name].icon then
-        table.insert(NewRecipe.icons, {icon = data.raw.recipe[OrigRecipe.name].icon, icon_size = data.raw.recipe[OrigRecipe.name].icon_size})
+        table.insert(NewRecipe.icons, {icon = data.raw.recipe[OrigRecipe.name].icon, icon_size = data.raw.recipe[OrigRecipe.name].icon_size, icon_scale = 64 / data.raw.recipe[OrigRecipe.name].icon_size})
     elseif #recipe_icons > 0 then
         for _, layer in pairs(recipe_icons) do
             table.insert(NewRecipe.icons, layer)

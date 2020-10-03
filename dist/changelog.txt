@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 2020-10-03
+  Changes:
+    - Added some logic when putting DSR behind beacons so they work better with Krastorio 2 & Space Exploration
+---------------------------------------------------------------------------------------------------
 Version: 1.0.7
 Date: 2020-09-24
   Bugfixes:
