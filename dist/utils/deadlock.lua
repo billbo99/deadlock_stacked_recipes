@@ -38,6 +38,19 @@ local function FixItemLocalisedNames()
     end
 end
 
+function Deadlock.FixFuel()
+    for item_name, item_table in pairs(data.raw.item) do
+        if string.match(item_name, "deadlock%-stack%-") then
+            local parent_item = string.sub(item_name, 16)
+            if data.raw.item[parent_item] and data.raw.item[parent_item].burnt_result then
+                if item_table.burnt_result == nil then
+                    item_table.burnt_result = "deadlock-stack-" .. data.raw.item[parent_item].burnt_result
+                end
+            end
+        end
+    end
+end
+
 function Deadlock.FixLocalisedNames()
     FixItemLocalisedNames()
     FixRecipeLocalisedNames()
@@ -591,7 +604,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
     end
     logger("5", string.format("NewRecipeResultsFlag = %s", NewRecipeResultsFlag))
 
-    -- Main Product
+    -- Main Product1
     logger("4", "Processing new recipe main_product")
     local StackedProduct = nil
     if NewRecipe.main_product then

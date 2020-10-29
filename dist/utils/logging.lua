@@ -7,18 +7,14 @@ function Logger.logger(flag, message)
     local level = tonumber(flag) or flag
 
     if type(setting) == "number" and setting >= 9 then
-        log("A")
         local info = debug.getinfo(2, "Sl")
         if info then
             log(string.format("[%s]:%d", info.short_src, info.currentline))
         end
-        log("B")
     end
 
     if type(setting) == "number" and setting >= level then
-        log("C")
         log("FLAG" .. flag .. " " .. message)
-        log("D")
     end
 
     if type(setting) == "number" and setting >= 9 and message == "RAW" then

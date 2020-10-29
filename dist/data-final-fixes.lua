@@ -9,18 +9,26 @@ if settings.startup["deadlock-enable-beltboxes"].value then
     log("DSR___START,DensityOverride")
     Deadlock.DensityOverride()
     log("DSR___END,DensityOverride")
+
     log("DSR___START,MakeStackedRecipes")
     Deadlock.MakeStackedRecipes()
     log("DSR___END,MakeStackedRecipes")
+
     log("DSR___START,DensityOverride2")
     Deadlock.DensityOverride()
     log("DSR___END,DensityOverride2")
+
     log("DSR___START,FixLocalisedNames")
     Deadlock.FixLocalisedNames()
     log("DSR___END,FixLocalisedNames")
+
     log("DSR___START,FixResearchTree")
     Deadlock.FixResearchTree()
     log("DSR___END,FixResearchTree")
+
+    log("DSR___START,FixFuel")
+    Deadlock.FixFuel()
+    log("DSR___END,FixFuel")
 end
 
 log("DSR___START,mods.Kythbloods_Stacked_Mining.data-final-fixes")
