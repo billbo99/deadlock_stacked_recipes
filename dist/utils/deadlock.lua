@@ -11,6 +11,21 @@ local logger = require("utils/logging").logger
 local Func = require("utils.func")
 local Deadlock = {}
 
+-- multiply a number with a unit (kJ, kW etc) at the end
+local function multiply_number_unit(property, mult)
+    local value, unit
+    value = string.match(property, "%d+")
+    if string.match(property, "%d+%.%d+") then -- catch floats
+        value = string.match(property, "%d+%.%d+")
+    end
+    unit = string.match(property, "%a+")
+    if unit == nil then
+        return value * mult
+    else
+        return ((value * mult) .. unit)
+    end
+end
+
 local function FixRecipeLocalisedNames()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
         if Func.starts_with(recipe_name, "StackedRecipe") then
@@ -39,9 +54,19 @@ local function FixItemLocalisedNames()
 end
 
 function Deadlock.FixFuel()
+    local deadlock_stack_size = settings.startup["deadlock-stack-size"].value
+
     for item_name, item_table in pairs(data.raw.item) do
         if string.match(item_name, "deadlock%-stack%-") then
             local parent_item = string.sub(item_name, 16)
+            if data.raw.item[parent_item] and data.raw.item[parent_item].fuel_value then
+                local parent = data.raw.item[parent_item]
+                item_table.fuel_category = parent.fuel_category
+                item_table.fuel_acceleration_multiplier = parent.fuel_acceleration_multiplier
+                item_table.fuel_top_speed_multiplier = parent.fuel_top_speed_multiplier
+                item_table.fuel_emissions_multiplier = parent.fuel_emissions_multiplier
+                item_table.fuel_value = multiply_number_unit(parent.fuel_value, deadlock_stack_size)
+            end
             if data.raw.item[parent_item] and data.raw.item[parent_item].burnt_result then
                 if item_table.burnt_result == nil then
                     item_table.burnt_result = "deadlock-stack-" .. data.raw.item[parent_item].burnt_result
