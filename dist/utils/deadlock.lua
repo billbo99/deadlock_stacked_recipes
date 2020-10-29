@@ -520,7 +520,13 @@ local function MakeStackedRecipe(recipe, ingredients, results)
 
     -- Grab all the ingredients of the orignal recipe and replace with stacked versions
     logger("4", "Processing ingredients")
-    ingredients = OrigRecipe.ingredients or OrigRecipe.normal.ingredients
+    if OrigRecipe.ingredients then
+        ingredients = OrigRecipe.ingredients
+    end
+    if OrigRecipe.normal and OrigRecipe.normal.ingredients then
+        ingredients = OrigRecipe.normal.ingredients
+    end
+
     for _, ingredient in pairs(ingredients) do
         local name
         if ingredient.name then
@@ -598,7 +604,6 @@ local function MakeStackedRecipe(recipe, ingredients, results)
             logger("5", string.format("no stacked version of main_product found  .. %s", StackedProduct))
         end
     end
-
     if NewRecipe.normal and NewRecipe.normal.main_product and data.raw.item[string.format("deadlock-stack-%s", NewRecipe.normal.main_product)] then
         StackedProduct = string.format("deadlock-stack-%s", NewRecipe.normal.main_product)
         if data.raw.item[StackedProduct] then
@@ -725,7 +730,8 @@ function Deadlock.MakeStackedRecipes()
             if recipe_table.ingredients then
                 logger("2", string.format("recipe_table.ingredients matched for %s", recipe_name))
                 ingredients = recipe_table.ingredients
-            elseif recipe_table.normal then
+            end
+            if recipe_table.normal then
                 logger("2", string.format("recipe_table.normal matched for %s", recipe_name))
                 ingredients = recipe_table.normal.ingredients
                 if recipe_table.expensive and recipe_table.expensive.ingredients then
