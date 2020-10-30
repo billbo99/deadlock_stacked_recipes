@@ -6,6 +6,14 @@ if mods["Deadlock-SE-bridge"] then
     local Deadlock = require("utils/deadlock")
 
     local Items = {
+        ["se-observation-frame-blank"] = {tier = "se-space-telescope"},
+        ["se-observation-frame-uv"] = {tier = "se-space-telescope"},
+        ["se-observation-frame-visible"] = {tier = "se-space-telescope"},
+        ["se-observation-frame-infrared"] = {tier = "se-space-telescope"},
+        ["se-observation-frame-xray"] = {tier = "se-space-telescope-xray"},
+        ["se-observation-frame-microwave"] = {tier = "se-space-telescope-microwave"},
+        ["se-observation-frame-gammaray"] = {tier = "se-space-telescope-gammaray"},
+        ["se-observation-frame-radio"] = {tier = "se-space-telescope-radio"},
         ["se-vulcanite-crushed"] = {tier = "deadlock-stacking-space"},
         ["se-vulcanite-washed"] = {tier = "deadlock-stacking-space"},
         ["se-vulcanite-ion-exchange-beads"] = {tier = "deadlock-stacking-space"},
