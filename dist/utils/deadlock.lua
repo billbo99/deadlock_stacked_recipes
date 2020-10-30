@@ -756,7 +756,7 @@ function Deadlock.MakeStackedRecipes()
             local SomethingStacked = false
             local StackedIngredientsFound = true
             local StackedResultsFound = true
-            local ingredients
+            local ingredients = nil
             local expensive_ingredients
             local results = {}
 
@@ -777,8 +777,9 @@ function Deadlock.MakeStackedRecipes()
                 else
                     expensive_ingredients = recipe_table.normal.ingredients
                 end
-            else
-                logger("1", string.format("nothing matched for %s", recipe_name))
+            end
+
+            if ingredients == nil then
                 ingredients = nil
             end
 
