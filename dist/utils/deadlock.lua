@@ -69,7 +69,10 @@ function Deadlock.FixFuel()
             end
             if data.raw.item[parent_item] and data.raw.item[parent_item].burnt_result then
                 if item_table.burnt_result == nil then
-                    item_table.burnt_result = "deadlock-stack-" .. data.raw.item[parent_item].burnt_result
+                    local burnt_result = "deadlock-stack-" .. data.raw.item[parent_item].burnt_result
+                    if data.raw.item[burnt_result] then
+                        item_table.burnt_result = "deadlock-stack-" .. data.raw.item[parent_item].burnt_result
+                    end
                 end
             end
         end

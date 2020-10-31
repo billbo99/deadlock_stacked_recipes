@@ -147,6 +147,7 @@ if mods["CompressedFluids"] then
         local parsed_recipes = {}
         local raw_recipes = util.table.deepcopy(data.raw.recipe)
         for _, recipe_table in pairs(raw_recipes) do
+            local skip_flag = false
             local rv1a, rv2a, rv3a, rv4a
             local rv1b, rv2b, rv3b, rv4b
             local ingredients, results, expensive_ingredients, expensive_results
@@ -261,9 +262,12 @@ if mods["CompressedFluids"] then
                             order = recipe_table.order or order
                         elseif not subgroup then
                             log("hmm")
+                            log(serpent.block(recipe_table))
                         end
 
-                        subgroup = MakeSubGroup(subgroup)
+                        if subgroup then
+                            subgroup = MakeSubGroup(subgroup)
+                        end
                         if subgroup then
                             recipe_table.subgroup = subgroup
                         end
@@ -273,7 +277,6 @@ if mods["CompressedFluids"] then
                     end
 
                     data:extend({recipe_table})
-
                     CheckProductivity(orig_name, recipe_table.name)
                     parsed_recipes[orig_name] = recipe_table.name
                 end

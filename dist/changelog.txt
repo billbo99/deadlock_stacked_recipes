@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.7
+Date: 2020-10-31
+  Bugfixes:
+    - Some more bug fixes when a recipe has no subgroup
+    - Added a check to validate that the expected stacked burnt result existed or not.
+---------------------------------------------------------------------------------------------------
 Version: 1.1.6
 Date: 2020-10-30
   Changes:
