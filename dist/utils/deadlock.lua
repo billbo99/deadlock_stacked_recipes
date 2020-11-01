@@ -517,39 +517,29 @@ local function CheckStackedProductivity(orig)
     end
 end
 
+local function ScaleUpFluidIngredients(ingredients, fluid_to_find, multiplier)
+    for _, ingredient in pairs(ingredients) do
+        local name
+        if ingredient.name then
+            name = ingredient.name
+        else
+            name = ingredient[1]
+        end
+        if name == fluid_to_find then
+            ingredient.amount = ingredient.amount * multiplier
+        end
+    end
+end
+
 local function ScaleUpFluid(recipe, fluid_to_find, multiplier)
-    local normal_ingredients = recipe.ingredients or recipe.normal.ingredients
-    local expensive_ingredients
-    if recipe.expensive then
-        expensive_ingredients = recipe.expensive.ingredients
-    else
-        expensive_ingredients = {}
+    if recipe.ingredients then
+        ScaleUpFluidIngredients(recipe.ingredients, fluid_to_find, multiplier)
     end
-
-    --update normal ingredients
-    for _, ingredient in pairs(normal_ingredients) do
-        local name
-        if ingredient.name then
-            name = ingredient.name
-        else
-            name = ingredient[1]
-        end
-        if name == fluid_to_find then
-            ingredient.amount = ingredient.amount * multiplier
-        end
+    if recipe.normal and recipe.normal.ingredients then
+        ScaleUpFluidIngredients(recipe.normal.ingredients, fluid_to_find, multiplier)
     end
-
-    --update expensive ingredients
-    for _, ingredient in pairs(expensive_ingredients) do
-        local name
-        if ingredient.name then
-            name = ingredient.name
-        else
-            name = ingredient[1]
-        end
-        if name == fluid_to_find then
-            ingredient.amount = ingredient.amount * multiplier
-        end
+    if recipe.expensive and recipe.expensive.ingredients then
+        ScaleUpFluidIngredients(recipe.expensive.ingredients, fluid_to_find, multiplier)
     end
 end
 
