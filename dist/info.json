@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "1.1.8",
+    "version": "1.1.10",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -25,6 +25,7 @@
         "?DeadlockStackingForDarkStar",
         "?DeadlockStackingForAngels",
         "?DeadlockStackingForBobs",
+        "?DeadlockStackingForZombiesExtended",
         "?deadlock-compressed-titanium",
         "?Deadlock-SE-bridge",
         "?Deadlock-AAII-bridge",
