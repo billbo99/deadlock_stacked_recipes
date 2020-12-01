@@ -31,10 +31,21 @@ if mods["CompressedFluids"] then
         local new_subgroup
         local subgroup
 
-        new_subgroup = name .. "HP"
-        if not data.raw["item-subgroup"][new_subgroup] then
-            subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "HP"}
+        new_subgroup = name .. "-HP"
+        if settings.startup["dsr_new_subgroup_placement"].value then
+            if not data.raw["item-subgroup"][new_subgroup] then
+                subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
+            end
+        else
+            if not data.raw["item-subgroup"][new_subgroup] then
+                subgroup = {type = "item-subgroup", name = new_subgroup, group = "Stacked_Recipes", order = new_subgroup}
+            end
         end
+
+        -- new_subgroup = name .. "HP"
+        -- if not data.raw["item-subgroup"][new_subgroup] then
+        --     subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "HP"}
+        -- end
 
         if subgroup then
             data:extend({subgroup})
@@ -237,44 +248,44 @@ if mods["CompressedFluids"] then
                     recipe_table.name = string.format("DSR_HighPressure-%s", recipe_table.name)
 
                     -- fixing subgroups
-                    if settings.startup["dsr_new_subgroup_placement"].value then
-                        local subgroup
-                        local order
-                        local main_product = rusty_recipes.get_main_product(recipe_table)
+                    -- if settings.startup["dsr_new_subgroup_placement"].value then
+                    local subgroup
+                    local order
+                    local main_product = rusty_recipes.get_main_product(recipe_table)
 
-                        if main_product then
-                            if not data.raw[main_product.type][main_product.name] then
-                                local prototypes = rusty_prototypes.find_by_name(main_product.name)
-                                for k, v in pairs(prototypes) do
-                                    if data.raw[k][v.name].subgroup then
-                                        subgroup = data.raw[k][v.name].subgroup
-                                        order = order or data.raw[k][v.name].order
-                                    end
+                    if main_product then
+                        if not data.raw[main_product.type][main_product.name] then
+                            local prototypes = rusty_prototypes.find_by_name(main_product.name)
+                            for k, v in pairs(prototypes) do
+                                if data.raw[k][v.name].subgroup then
+                                    subgroup = data.raw[k][v.name].subgroup
+                                    order = order or data.raw[k][v.name].order
                                 end
-                            else
-                                subgroup = data.raw[main_product.type][main_product.name].subgroup
-                                order = order or data.raw[main_product.type][main_product.name].order
                             end
-                        end
-
-                        if recipe_table.subgroup then
-                            subgroup = recipe_table.subgroup
-                            order = recipe_table.order or order
-                        elseif not subgroup then
-                            log("hmm")
-                            log(serpent.block(recipe_table))
-                        end
-
-                        if subgroup then
-                            subgroup = MakeSubGroup(subgroup)
-                        end
-                        if subgroup then
-                            recipe_table.subgroup = subgroup
-                        end
-                        if order then
-                            recipe_table.order = order
+                        else
+                            subgroup = data.raw[main_product.type][main_product.name].subgroup
+                            order = order or data.raw[main_product.type][main_product.name].order
                         end
                     end
+
+                    if recipe_table.subgroup then
+                        subgroup = recipe_table.subgroup
+                        order = recipe_table.order or order
+                    elseif not subgroup then
+                        log("hmm")
+                        log(serpent.block(recipe_table))
+                    end
+
+                    if subgroup then
+                        subgroup = MakeSubGroup(subgroup)
+                    end
+                    if subgroup then
+                        recipe_table.subgroup = subgroup
+                    end
+                    if order then
+                        recipe_table.order = order
+                    end
+                    -- end
 
                     data:extend({recipe_table})
                     CheckProductivity(orig_name, recipe_table.name)

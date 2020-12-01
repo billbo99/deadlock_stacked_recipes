@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.1
+Date: 2020-12-01
+  Changes:
+    - If new menu layout is disabled all stacked/high pressure recipes are put into a dedicated tab
+---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 2020-11-25
   Changes:

@@ -323,13 +323,12 @@ local function MakeSubGroup(name, order)
     local new_subgroup
     local subgroup
 
+    new_subgroup = name .. "-Stacked"
     if settings.startup["dsr_new_subgroup_placement"].value then
-        new_subgroup = name .. "Stacked"
         if not data.raw["item-subgroup"][new_subgroup] then
             subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
         end
     else
-        new_subgroup = "Stacked-" .. name
         if not data.raw["item-subgroup"][new_subgroup] then
             subgroup = {type = "item-subgroup", name = new_subgroup, group = "Stacked_Recipes", order = new_subgroup}
         end
