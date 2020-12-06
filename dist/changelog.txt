@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.3
+Date: 2020-12-06
+  Changes:
+    - Some mods (248k Mod) have defined fluid temperature using a string, needed to convert to a number before doing an IF statement
+---------------------------------------------------------------------------------------------------
 Version: 1.2.2
 Date: 2020-12-06
   Changes:

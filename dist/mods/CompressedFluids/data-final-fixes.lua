@@ -107,7 +107,7 @@ if mods["CompressedFluids"] then
                         -- Some of the compressed fluids do not have matching temperature ranges as the base fluid
                         if item.temperature then
                             if data.raw.fluid[hp_name].max_temperature and data.raw.fluid[hp_name].default_temperature then
-                                if item.temperature > data.raw.fluid[hp_name].max_temperature or item.temperature < data.raw.fluid[hp_name].default_temperature then
+                                if tonumber(item.temperature) > data.raw.fluid[hp_name].max_temperature or tonumber(item.temperature) < data.raw.fluid[hp_name].default_temperature then
                                     flag = "abort"
                                 end
                             end
