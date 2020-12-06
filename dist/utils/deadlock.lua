@@ -46,7 +46,9 @@ local function FixItemLocalisedNames()
             local parent_item = string.sub(item_name, 16)
             if data.raw.item[parent_item] then
                 local locale = rusty_locale.of_item(data.raw.item[parent_item])
-                item_table.localised_name[2] = locale.name
+                if Func.has_key(item_table, "localised_name") then
+                    item_table.localised_name[2] = locale.name
+                end
                 logger("2", string.format("FixItemLocalisedNames .. %s .. %s", item_name, serpent.block(locale.name)))
             end
         end
@@ -263,7 +265,7 @@ function Deadlock.DensityOverride()
                     stack_size = parent_stack_size
                     -- stack_size = deadlock_stack_size
                     -- if parent_stack_size > deadlock_stack_size then
-                    --     stack_size = parent_stack_size
+                    --     stack_size = parent_stack_sizead
                     -- end
                     -- if child_stack_size < deadlock_stack_size then
                     --     -- stack_size = deadlock_stack_size
@@ -271,7 +273,9 @@ function Deadlock.DensityOverride()
                     -- end
 
                     data.raw.item[k].stack_size = stack_size
-                    data.raw.item[k].localised_name[3] = deadlock_stack_size
+                    if Func.has_key(data.raw.item[k], "localised_name") then
+                        data.raw.item[k].localised_name[3] = deadlock_stack_size
+                    end
 
                     logger("1", string.format("DensityOverride .. %s .. %s .. %s", type, k, data.raw.item[k].stack_size))
                 end

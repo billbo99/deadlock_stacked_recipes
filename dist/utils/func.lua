@@ -1,5 +1,14 @@
 local Func = {}
 
+function Func.has_key(table, element)
+    for key, _ in pairs(table) do
+        if key == element then
+            return true
+        end
+    end
+    return false
+end
+
 function Func.contains(table, element)
     for _, value in pairs(table) do
         if value == element then
