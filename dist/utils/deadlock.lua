@@ -167,7 +167,7 @@ function Deadlock.ReOrderTechnologyBehindBeacons()
                     end
                 end
 
-                if tech.effects then
+                if tech.effects and data.raw.technology[dsr_tech] then
                     local effects = {}
                     for _, effect in pairs(tech.effects) do
                         if effect.type == "unlock-recipe" and (Func.starts_with(effect.recipe, "StackedRecipe-") or Func.starts_with(effect.recipe, "DSR_HighPressure-")) then
@@ -845,7 +845,7 @@ function Deadlock.MakeStackedRecipes()
                     for _, product in pairs(results) do
                         local product_name = product.name or product[1] or nil
                         if product_name then
-                            local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", product_name)]
+                            local DeadlockItem = data.raw.item[string.format("deadlock-stack-%s", product_name)] or data.raw.tool[string.format("deadlock-stack-%s", product_name)]
                             if not DeadlockItem then
                                 if product.type == "fluid" then
                                     -- do nothing
