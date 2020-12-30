@@ -205,6 +205,23 @@ function Deadlock.ReOrderTechnologyBehindBeacons()
     end
 end
 
+function Deadlock.HideRecipes()
+    if settings.startup["Hide_DSR_recipes"].value then
+        for recipe, recipe_table in pairs(data.raw.recipe) do
+            if Func.starts_with(recipe, "StackedRecipe") or Func.starts_with(recipe, "DSR_HighPressure") then
+                log("hide_from_player_crafting .. " .. tostring(settings.startup["Hide_DSR_recipes"].value))
+                recipe_table.hide_from_player_crafting = true
+                if recipe_table.normal then
+                    recipe_table.normal.hide_from_player_crafting = true
+                end
+                if recipe_table.expensive then
+                    recipe_table.expensive.hide_from_player_crafting = true
+                end
+            end
+        end
+    end
+end
+
 function Deadlock.DensityOverride()
     if settings.startup["override_stacking_size"].value then
         local deadlock_stack_size = settings.startup["deadlock-stack-size"].value

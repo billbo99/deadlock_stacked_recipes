@@ -1,6 +1,7 @@
 local logger = require("utils/logging").logger
 local Deadlock = require("utils/deadlock")
 
+require("mods.IndustrialRevolutionStacking.data-final-fixes")
 require "mods.Krastorio2.data-final-fixes"
 require "mods.FactorioExtended-Plus-Module.data-final-fixes"
 require "mods.Deadlock-SE-bridge.data-final-fixes"
@@ -43,6 +44,10 @@ if settings.startup["DSR_recipes_after_beacons"].value then
     Deadlock.ReOrderTechnologyBehindBeacons()
 end
 log("DSR___END,ReOrderTechnologyBehindBeacons")
+
+log("DSR___START,HideRecipes")
+Deadlock.HideRecipes()
+log("DSR___END,HideRecipes")
 
 logger("9", "RAW")
 

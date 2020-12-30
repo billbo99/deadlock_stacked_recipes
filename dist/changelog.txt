@@ -1,4 +1,25 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.3.0
+Date: 2020-12-30
+  Changes:
+    - Added setting to enable  "hide_from_player_crafting"  on stacked recipes so they dont show in players crafting menu
+---------------------------------------------------------------------------------------------------
+Version: 1.2.8
+Date: 2020-12-30
+  Changes:
+    - Additional IR2 intermediates
+---------------------------------------------------------------------------------------------------
+Version: 1.2.7
+Date: 2020-12-26
+  Changes:
+    - IR2 ores dont want to stack
+    - IR2 gasses/liquids dont want to compress
+---------------------------------------------------------------------------------------------------
+Version: 1.2.6
+Date: 2020-12-26
+  Changes:
+    - Missed some chromium stacked items for IR2
+---------------------------------------------------------------------------------------------------
 Version: 1.2.5
 Date: 2020-12-26
   Changes:
