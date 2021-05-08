@@ -763,7 +763,7 @@ end
 function Deadlock.MakeStackedRecipes()
     for recipe_name, recipe_table in pairs(data.raw.recipe) do
         logger("1", string.format("000 MakeStackedRecipes %s", recipe_name))
-        if Func.starts_with(recipe_name, "StackedRecipe") or Func.starts_with(recipe_name, "kr-vc-") or Func.starts_with(recipe_name, "deadlock-stacks-stack") or Func.starts_with(recipe_name, "deadlock-stacks-unstack") or Func.starts_with(recipe_name, "spidertron-remote") then
+        if Func.starts_with(recipe_name, "StackedRecipe") or Func.starts_with(recipe_name, "kr-vc-") or Func.starts_with(recipe_name, "deadlock-stacks-stack") or Func.starts_with(recipe_name, "deadlock-stacks-unstack") or Func.starts_with(recipe_name, "spidertron-remote") or Func.starts_with(recipe_name, "sp-spidertron-patrol-remote") then
             logger("1", string.format("Skipping recipe .. %s", recipe_name.name))
         else
             local SomethingStacked = false
