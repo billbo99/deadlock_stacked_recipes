@@ -19,6 +19,7 @@ if mods["IndustrialRevolutionStacking"] then
     }
 
     for k, v in pairs(Items) do
+        data.raw["item"][k].stack_size = tonumber(data.raw["item"][k].stack_size)
         deadlock.add_stack(k, nil, v.tier, nil, nil)
     end
 end

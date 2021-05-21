@@ -15,6 +15,7 @@ if mods["IndustrialRevolutionStacking"] then
         ["wood-beam"] = {tier = "deadlock-stacking-1"},
         ["wood-chips"] = {tier = "deadlock-stacking-1"},
         ["rubber"] = {tier = "deadlock-stacking-1"},
+        ["rubber-wood"] = {tier = "deadlock-stacking-1"},
         ["charcoal"] = {tier = "deadlock-stacking-1"},
         ["paper"] = {tier = "deadlock-stacking-1"},
         ["coal"] = {tier = "deadlock-stacking-1"},
@@ -121,6 +122,9 @@ if mods["IndustrialRevolutionStacking"] then
     }
 
     for k, v in pairs(Items) do
+        if data.raw["item"][k] and data.raw["item"][k].stack_size then
+            data.raw["item"][k].stack_size = tonumber(data.raw["item"][k].stack_size)
+        end
         deadlock.add_stack(k, nil, v.tier, nil, nil)
     end
 end
