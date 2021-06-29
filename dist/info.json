@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "1.3.3",
+    "version": "1.3.5",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -34,6 +34,7 @@
         "?Kux-Deadlock-Stacking-Bio_Industries",
         "?bz-dsr-bridge",
         "?DeadlockStackingForMadclown_MdRuz",
+        "?MD_SeKrCompatibility",
         "(?)deadlock-stacking-crating-bobs >= 0.7.6"
     ],
     "description": "This mod makes recipes using stacked ingredients to produce stacked output.  The reason for this mod is I have found some mod packs can end up with major speed boost that even loaders are unable to provide the resources fast enough"

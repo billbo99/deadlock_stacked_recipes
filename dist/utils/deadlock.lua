@@ -239,7 +239,7 @@ function Deadlock.DensityOverride()
                     end
                 end
 
-                if data.raw.recipe[k].results then
+                if data.raw.recipe[k].results and #data.raw.recipe[k].results > 0 then
                     local items = data.raw.recipe[k].results[1].amount / RecipeMultiplier
                     if items < deadlock_stack_size then
                         data.raw.recipe[k].results[1].amount = deadlock_stack_size * RecipeMultiplier
@@ -247,7 +247,7 @@ function Deadlock.DensityOverride()
                 end
             end
             if Func.starts_with(k, "deadlock-stacks-stack-") then
-                if data.raw.recipe[k].ingredients then
+                if data.raw.recipe[k].ingredients and #data.raw.recipe[k].ingredients > 0 then
                     if data.raw.recipe[k].ingredients[1].amount then
                         local items = data.raw.recipe[k].ingredients[1].amount / RecipeMultiplier
                         if items < deadlock_stack_size then
