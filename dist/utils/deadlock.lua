@@ -3,13 +3,86 @@ local rusty_icons = require("__rusty-locale__.icons")
 local rusty_recipes = require("__rusty-locale__.recipes")
 local rusty_prototypes = require("__rusty-locale__.prototypes")
 
-local _Data = require("__stdlib__/stdlib/data/data")
-local _Recipe = require("__stdlib__/stdlib/data/recipe")
-
 local logger = require("utils/logging").logger
 
 local Func = require("utils.func")
 local Deadlock = {}
+
+local function format(ingredient, result_count)
+    local object
+    if type(ingredient) == "table" then
+        if ingredient.valid and ingredient:is_valid() then
+            return ingredient
+        elseif ingredient.name then
+            if data.raw[ingredient.type] and data.raw[ingredient.type][ingredient.name] then
+                object = table.deepcopy(ingredient)
+                if not object.amount and not (object.amount_min and object.amount_max and object.probability) then
+                    error("Result table requires amount or probabilities")
+                end
+            end
+        elseif #ingredient > 0 then
+            -- Can only be item types not fluid
+            local item = data.raw.item[ingredient[1]]
+            if item then
+                object = {
+                    type = "item",
+                    name = ingredient[1],
+                    amount = ingredient[2] or 1
+                }
+            end
+        end
+    elseif type(ingredient) == "string" then
+        -- Our shortcut so we need to check it
+        local item = data.raw.item[ingredient]
+        if item then
+            object = {
+                type = item.type == "fluid" and "fluid" or "item",
+                name = ingredient,
+                amount = result_count or 1
+            }
+        end
+    end
+    return object
+end
+
+local function _replace_ingredient(ingredients, orig_item, new_item)
+    for _, ingredient in pairs(ingredients) do
+        if ingredient.name == orig_item then
+            ingredient.name = new_item
+        end
+    end
+end
+
+local function replace_ingredient(recipe, orig_item, new_item)
+    if recipe.normal and recipe.normal.ingredients then
+        _replace_ingredient(recipe.normal.ingredients, orig_item, new_item)
+    end
+    if recipe.expensive and recipe.expensive.ingredients then
+        _replace_ingredient(recipe.expensive.ingredients, orig_item, new_item)
+    end
+    if ingredients then
+        _replace_ingredient(recipe.expensive.ingredients, orig_item, new_item)
+    end
+end
+
+local function convert_results(recipe)
+    if recipe.normal then
+        if recipe.normal.result then
+            recipe.normal.results = {format(recipe.normal.result, recipe.normal.result_count or 1)}
+            recipe.normal.result = nil
+            recipe.normal.result_count = nil
+        end
+        if recipe.expensive.result then
+            recipe.expensive.results = {format(recipe.expensive.result, recipe.expensive.result_count or 1)}
+            recipe.expensive.result = nil
+            recipe.expensive.result_count = nil
+        end
+    elseif recipe.result then
+        recipe.results = {format(recipe.result, recipe.result_count or 1)}
+        recipe.result = nil
+        recipe.result_count = nil
+    end
+end
 
 -- multiply a number with a unit (kJ, kW etc) at the end
 local function multiply_number_unit(property, mult)
@@ -565,8 +638,11 @@ end
 
 local function MakeStackedRecipe(recipe, ingredients, results)
     local StackedRecipeName = string.format("StackedRecipe-%s", recipe)
-    local OrigRecipe = _Recipe(recipe):convert_results()
-    local NewRecipe = _Recipe(recipe):copy(StackedRecipeName):convert_results()
+    local OrigRecipe = table.deepcopy(data.raw.recipe[recipe])
+    local NewRecipe = table.deepcopy(data.raw.recipe[recipe])
+    NewRecipe.name = StackedRecipeName
+    convert_results(OrigRecipe)
+    convert_results(NewRecipe)
     local Multiplier = settings.startup["deadlock-stack-size"].value
 
     -- Grab all the ingredients of the orignal recipe and replace with stacked versions
@@ -588,7 +664,8 @@ local function MakeStackedRecipe(recipe, ingredients, results)
         local StackedIngredient = string.format("deadlock-stack-%s", name)
         if data.raw.item[StackedIngredient] then
             logger("5", string.format("Adding %s to new recipe", StackedIngredient))
-            NewRecipe:replace_ingredient(name, StackedIngredient, StackedIngredient)
+            -- NewRecipe:replace_ingredient(name, StackedIngredient, StackedIngredient)
+            replace_ingredient(NewRecipe, name, StackedIngredient)
         end
         if ingredient.type and ingredient.type == "fluid" then
             logger("5", string.format("Adding %s to new recipe", name))
@@ -751,7 +828,7 @@ local function MakeStackedRecipe(recipe, ingredients, results)
 
     if NewRecipeResultsFlag then
         logger("1", "adding recipe .. " .. NewRecipe.name)
-        NewRecipe:extend()
+        data:extend({NewRecipe})
         CheckStackedProductivity(recipe)
         logger("8", serpent.block(data.raw.recipe[NewRecipe.name]))
     else
@@ -776,7 +853,8 @@ function Deadlock.MakeStackedRecipes()
             if data.raw.recipe[recipe_name].normal and not data.raw.recipe[recipe_name].expensive then
                 data.raw.recipe[recipe_name].expensive = data.raw.recipe[recipe_name].normal
             end
-            local FixedRecipe = _Recipe(recipe_name):convert_results() -- standardize recipe format
+            local FixedRecipe = table.deepcopy(data.raw.recipe[recipe_name])
+            convert_results(FixedRecipe)
 
             if recipe_table.ingredients then
                 logger("2", string.format("recipe_table.ingredients matched for %s", recipe_name))
