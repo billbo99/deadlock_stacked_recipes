@@ -50,6 +50,9 @@ local function _replace_ingredient(ingredients, orig_item, new_item)
         if ingredient.name == orig_item then
             ingredient.name = new_item
         end
+        if ingredient[1] == orig_item then
+            ingredient[1] = new_item
+        end
     end
 end
 
@@ -60,8 +63,8 @@ local function replace_ingredient(recipe, orig_item, new_item)
     if recipe.expensive and recipe.expensive.ingredients then
         _replace_ingredient(recipe.expensive.ingredients, orig_item, new_item)
     end
-    if ingredients then
-        _replace_ingredient(recipe.expensive.ingredients, orig_item, new_item)
+    if recipe.ingredients then
+        _replace_ingredient(recipe.ingredients, orig_item, new_item)
     end
 end
 
