@@ -1,4 +1,27 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.5
+Date: 2020-07-31
+  Changes:
+    - added optional dependency for DeadlockStackingForMadclown
+    - added optional dependency for DeadlockStackingForMoreScience
+    - added optional dependency for DeadlockStackingForIngredient_Scrap
+    - added optional dependency for DeadlockStackingForElectronicComponentPacking
+---------------------------------------------------------------------------------------------------
+Version: 1.4.4
+Date: 2020-07-25
+  Bugfixes:
+    - Fixed a bug found by hnougher and applied a fix suggested by KUDr
+---------------------------------------------------------------------------------------------------
+Version: 1.4.3
+Date: 2020-07-22
+  Changes:
+    - added optional dependency for DeadlockStackingFor248k
+---------------------------------------------------------------------------------------------------
+Version: 1.4.2
+Date: 2020-07-16
+  Changes:
+    - added optional dependency for Kux-Deadlock-Stacking-Bio_Industries
+---------------------------------------------------------------------------------------------------
 Version: 1.4.1
 Date: 2020-07-14
   Changes:

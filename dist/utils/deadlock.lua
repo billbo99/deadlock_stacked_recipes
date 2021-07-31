@@ -8,6 +8,32 @@ local logger = require("utils/logging").logger
 local Func = require("utils.func")
 local Deadlock = {}
 
+local item_cache = {}
+local item_types = {
+    "item",
+    "fluid",
+    "ammo",
+    "tool",
+    "module",
+    "capsule",
+    "gun",
+    "repair-tool",
+    "armor",
+    "rail-planner",
+    "item-with-entity-data"
+}
+
+local function find_item(name)
+    if not item_cache[name] then
+        for _, item_type in ipairs(item_types) do
+            if data.raw[item_type] and data.raw[item_type][name] then
+                item_cache[name] = data.raw[item_type][name]
+            end
+        end
+    end
+    return item_cache[name]
+end
+
 local function format(ingredient, result_count)
     local object
     if type(ingredient) == "table" then
@@ -22,10 +48,10 @@ local function format(ingredient, result_count)
             end
         elseif #ingredient > 0 then
             -- Can only be item types not fluid
-            local item = data.raw.item[ingredient[1]]
+            local item = find_item(ingredient[1])
             if item then
                 object = {
-                    type = "item",
+                    type = item.type,
                     name = ingredient[1],
                     amount = ingredient[2] or 1
                 }
@@ -33,7 +59,7 @@ local function format(ingredient, result_count)
         end
     elseif type(ingredient) == "string" then
         -- Our shortcut so we need to check it
-        local item = data.raw.item[ingredient]
+        local item = find_item(ingredient)
         if item then
             object = {
                 type = item.type == "fluid" and "fluid" or "item",
