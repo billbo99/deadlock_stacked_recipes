@@ -146,10 +146,20 @@ local function FixItemLocalisedNames()
     for item_name, item_table in pairs(data.raw.item) do
         if string.match(item_name, "deadlock%-stack%-") then
             local parent_item = string.sub(item_name, 16)
-            if data.raw.item[parent_item] then
-                local locale = rusty_locale.of_item(data.raw.item[parent_item])
+            local parent = data.raw.item[parent_item]
+            if parent then
+                log(parent.name)
+                local locale = rusty_locale.of_item(parent)
                 if Func.has_key(item_table, "localised_name") then
                     item_table.localised_name[2] = locale.name
+                end
+                if data.raw.recipe["deadlock-stacks-stack-" .. parent.name] then
+                    log(data.raw.recipe["deadlock-stacks-stack-" .. parent.name].name)
+                    data.raw.recipe["deadlock-stacks-stack-" .. parent.name].localised_name[2] = locale.name
+                end
+                if data.raw.recipe["deadlock-stacks-unstack-" .. parent.name] then
+                    log(data.raw.recipe["deadlock-stacks-unstack-" .. parent.name].name)
+                    data.raw.recipe["deadlock-stacks-unstack-" .. parent.name].localised_name[2] = locale.name
                 end
                 logger("2", string.format("FixItemLocalisedNames .. %s .. %s", item_name, serpent.block(locale.name)))
             end
