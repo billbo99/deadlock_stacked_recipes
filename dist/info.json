@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "1.4.6",
+    "version": "1.4.7",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -17,7 +17,6 @@
         "(?)space-exploration",
         "(?)space-exploration-postprocess",
         "?Stacked_Mining",
-        "?Kux-Deadlock-Stacking-Bio_Industries",
         "?IndustrialRevolutionStacking",
         "?DeadlockStackingForFactorioExtendedPlus",
         "?DeadlockStackingForDarkStar",

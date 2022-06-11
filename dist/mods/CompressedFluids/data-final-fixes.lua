@@ -34,7 +34,11 @@ if mods["CompressedFluids"] then
         new_subgroup = name .. "-HP"
         if settings.startup["dsr_new_subgroup_placement"].value then
             if not data.raw["item-subgroup"][new_subgroup] then
-                subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
+                if current_order then
+                    subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
+                else
+                    subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group}
+                end
             end
         else
             if not data.raw["item-subgroup"][new_subgroup] then

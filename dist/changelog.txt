@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.4.7
+Date: 2022-06-11
+  Bugfixes:
+    - nil value at CompressedFluids/data-final-fixes.lua:37
+      - problem has now moved onto 'se_k2_fluid_permutations'
+---------------------------------------------------------------------------------------------------
 Version: 1.4.6
 Date: 2020-10-29
   Changes:
