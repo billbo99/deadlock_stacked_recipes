@@ -1,6 +1,6 @@
 {
     "name": "deadlock_stacked_recipes",
-    "version": "1.4.7",
+    "version": "1.5.0",
     "title": "Deadlock Stacked Recipes",
     "author": "billbo99",
     "contact": "",
@@ -30,6 +30,7 @@
         "?DeadlockStackingForKrastorioLegacy",
         "?DeadlockStackingForKrastorio2",
         "?DeadlockStackingForOmnimatter",
+        "?DeadlockStackingForExoticIndustries",
         "?Kux-Deadlock-Stacking-Bio_Industries",
         "?bz-dsr-bridge",
         "?DeadlockStackingForMadclown_MdRuz",

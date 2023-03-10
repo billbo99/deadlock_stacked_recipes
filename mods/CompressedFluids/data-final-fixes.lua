@@ -4,9 +4,10 @@ local rusty_locale = require("__rusty-locale__.locale")
 local rusty_icons = require("__rusty-locale__.icons")
 local rusty_recipes = require("__rusty-locale__.recipes")
 local rusty_prototypes = require("__rusty-locale__.prototypes")
+local logger = require("utils/logging").logger
 
 if mods["CompressedFluids"] then
-    local hp_icon = {icon = "__CompressedFluids__/graphics/icons/overlay-HP-group.png", icon_size = 64, tint = {r = 0, g = 1, b = 0}}
+    local hp_icon = { icon = "__CompressedFluids__/graphics/icons/overlay-HP-group.png", icon_size = 64, tint = { r = 0, g = 1, b = 0 } }
 
     local scale_up_factor
     if settings.startup["override_fluid_only_recipes"] then
@@ -35,14 +36,14 @@ if mods["CompressedFluids"] then
         if settings.startup["dsr_new_subgroup_placement"].value then
             if not data.raw["item-subgroup"][new_subgroup] then
                 if current_order then
-                    subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked"}
+                    subgroup = { type = "item-subgroup", name = new_subgroup, group = current_group, order = current_order .. "Stacked" }
                 else
-                    subgroup = {type = "item-subgroup", name = new_subgroup, group = current_group}
+                    subgroup = { type = "item-subgroup", name = new_subgroup, group = current_group }
                 end
             end
         else
             if not data.raw["item-subgroup"][new_subgroup] then
-                subgroup = {type = "item-subgroup", name = new_subgroup, group = "Stacked_Recipes", order = new_subgroup}
+                subgroup = { type = "item-subgroup", name = new_subgroup, group = "Stacked_Recipes", order = new_subgroup }
             end
         end
 
@@ -52,7 +53,7 @@ if mods["CompressedFluids"] then
         -- end
 
         if subgroup then
-            data:extend({subgroup})
+            data:extend({ subgroup })
         end
         return new_subgroup
     end
@@ -80,7 +81,7 @@ if mods["CompressedFluids"] then
                 for effect, effect_table in pairs(technology_table.effects) do
                     if effect_table.type == "unlock-recipe" then
                         if effect_table.recipe and recipes[effect_table.recipe] then
-                            table.insert(technology_table.effects, {type = "unlock-recipe", recipe = recipes[effect_table.recipe]})
+                            table.insert(technology_table.effects, { type = "unlock-recipe", recipe = recipes[effect_table.recipe] })
                         end
                     end
                 end
@@ -156,8 +157,8 @@ if mods["CompressedFluids"] then
     end
 
     local function parse_recipes()
-        local exclude_category = {"mining-depot", "fluid-decompressing", "fluid-compressing"}
-        local exclude_subgroup = {"empty-barrel", "fill-barrel"}
+        local exclude_category = { "mining-depot", "fluid-decompressing", "fluid-compressing" }
+        local exclude_subgroup = { "empty-barrel", "fill-barrel" }
 
         local parsed_recipes = {}
         local raw_recipes = util.table.deepcopy(data.raw.recipe)
@@ -173,7 +174,7 @@ if mods["CompressedFluids"] then
             else
                 Recipes.standardize_recipe(recipe_table)
 
-                local recipe_icons = rusty_icons.of(recipe_table)
+                local recipe_icons = rusty_icons.of(recipe_table, true)
                 local recipe_locale = rusty_locale.of(recipe_table)
                 local recipe_main_product = rusty_recipes.get_main_product(recipe_table)
 
@@ -197,7 +198,7 @@ if mods["CompressedFluids"] then
                     -- bail out of recipe creation
                 elseif (rv1a or rv2a or rv3a or rv4a) and recipe_icons then
                     -- fluidHP.localised_name = {"fluid-name.compressed-fluid", fluid.localised_name or {"fluid-name."..fluid.name}}
-                    recipe_table.localised_name = {"recipe-name.DSR_HighPressure", recipe_locale.name}
+                    recipe_table.localised_name = { "recipe-name.DSR_HighPressure", recipe_locale.name }
 
                     -- Have to do some coding when main_product has been declared
                     if recipe_table.normal.main_product and recipe_table.normal.main_product ~= "" then
@@ -276,8 +277,8 @@ if mods["CompressedFluids"] then
                         subgroup = recipe_table.subgroup
                         order = recipe_table.order or order
                     elseif not subgroup then
-                        log("hmm")
-                        log(serpent.block(recipe_table))
+                        logger("1,", "hmm")
+                        logger("1,", serpent.block(recipe_table))
                     end
 
                     if subgroup then
@@ -291,7 +292,7 @@ if mods["CompressedFluids"] then
                     end
                     -- end
 
-                    data:extend({recipe_table})
+                    data:extend({ recipe_table })
                     CheckProductivity(orig_name, recipe_table.name)
                     parsed_recipes[orig_name] = recipe_table.name
                 end
@@ -306,4 +307,25 @@ if mods["CompressedFluids"] then
     end
     local parsed_recipes = parse_recipes()
     add_recipes_to_technologies(parsed_recipes)
+
+    function FixFulidFuelValue()
+        local multiplyier = settings.startup['fluid-compression-rate'].value ---@cast multiplyier integer
+
+        for _, fluid in pairs(data.raw.fluid) do
+            if Func.starts_with(fluid.name, "high-pressure") then
+                local parent_item = string.sub(fluid.name, 15)
+                if data.raw.fluid[parent_item] and data.raw.fluid[parent_item].fuel_value then
+                    local parent = data.raw.fluid[parent_item]
+                    -- item_table.fuel_category = parent.fuel_category
+                    -- item_table.fuel_acceleration_multiplier = parent.fuel_acceleration_multiplier
+                    -- item_table.fuel_top_speed_multiplier = parent.fuel_top_speed_multiplier
+                    -- item_table.fuel_emissions_multiplier = parent.fuel_emissions_multiplier
+                    fluid.fuel_value = Func.multiply_number_unit(parent.fuel_value, multiplyier)
+                    logger("1", "Fixed " .. fluid.name .. " to have fuel_value of " .. fluid.fuel_value)
+                end
+            end
+        end
+    end
+
+    FixFulidFuelValue()
 end

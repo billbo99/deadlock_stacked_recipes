@@ -1,3 +1,5 @@
+local logger = require("utils/logging").logger
+
 if not settings.startup["DSR_recipes_after_beacons"].value then
     return
 end
@@ -59,7 +61,7 @@ local rank = {
 }
 
 for name, tool_table in pairs(data.raw.tool) do
-    log(name)
+    logger("1", name)
     if rank[name] ~= nil and rank[name] ~= 9999 then
         data:extend(
             {
@@ -89,4 +91,4 @@ for name, tool_table in pairs(data.raw.tool) do
     end
 end
 
-log("end")
+logger("1", "end")
