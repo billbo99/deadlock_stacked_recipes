@@ -416,7 +416,7 @@ function Deadlock.FixResearchTree()
         if tech_table.enabled ~= nil then
             enabled = tech_table.enabled
         end
-        if enabled and tech_table.effects then
+        if (enabled and tech_table.effects) or (not (enabled) and tech_table.visible_when_disabled) then
             local recipes_to_unlock = {}
             for _, effect in pairs(tech_table.effects) do
                 if effect.type and effect.type == "unlock-recipe" then

@@ -172,6 +172,7 @@ if mods["CompressedFluids"] then
             if Func.contains(exclude_category, recipe_table.category) or Func.contains(exclude_subgroup, recipe_table.subgroup) then
                 -- log(string.format("Skipping .. %s", recipe_table.name))
             else
+                logger("1", "CompressedFluids:parse_recipes " .. recipe_table.name)
                 Recipes.standardize_recipe(recipe_table)
 
                 local recipe_icons = rusty_icons.of(recipe_table, true)
@@ -217,8 +218,13 @@ if mods["CompressedFluids"] then
                             end
                         end
 
+                        if data.raw.fluid[suggested_main_product] and data.raw.fluid[suggested_main_product].localised_name then
+                            recipe_table.localised_name = data.raw.fluid[suggested_main_product].localised_name
+                        end
+
                         -- make sure the suggested_main_product is in the list of results
                         if suggested_main_product then
+                            recipe_table.localised_name = nil
                             local flag1, flag2 = false, false
                             for _, item in pairs(results) do
                                 if item.type and item.type == "fluid" then
