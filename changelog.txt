@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.3
+Date: 2023-05-01
+  Bugfixes:
+    - Was missing some locales
+    - Added some protection on logger function doing a concat on a boolean
+---------------------------------------------------------------------------------------------------
 Version: 1.5.2
 Date: 2023-04-28
   Changes:
