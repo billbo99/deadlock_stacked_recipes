@@ -4,7 +4,7 @@ Logger.tracking = {}
 
 function Logger.logger(flag, message)
     local setting = tonumber(settings.startup["debug_logging_level"].value) or settings.startup["debug_logging_level"].value
-    local level = tonumber(flag) or flag
+    local level = tonumber(flag)
 
     if type(setting) == "number" and setting >= 9 then
         local info = debug.getinfo(2, "Sl")

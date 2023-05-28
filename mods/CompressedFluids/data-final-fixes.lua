@@ -283,8 +283,8 @@ if mods["CompressedFluids"] then
                         subgroup = recipe_table.subgroup
                         order = recipe_table.order or order
                     elseif not subgroup then
-                        logger("1,", "hmm")
-                        logger("1,", serpent.block(recipe_table))
+                        logger("1", "hmm")
+                        logger("1", serpent.block(recipe_table))
                     end
 
                     if subgroup then
