@@ -14,7 +14,7 @@ function Logger.logger(flag, message)
     end
 
     if type(setting) == "number" and setting >= level then
-        log("FLAG" .. flag .. " " .. message)
+        log("FLAG" .. tostring(flag) .. " " .. message)
     end
 
     if type(setting) == "number" and setting >= 9 and message == "RAW" then
