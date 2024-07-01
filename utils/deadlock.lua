@@ -99,19 +99,25 @@ end
 ---@param recipe LuaRecipePrototype
 local function convert_results(recipe)
     if recipe.normal and recipe.normal.result then
-        recipe.normal.results = { format(recipe.normal.result, recipe.normal.result_count or 1) }
+        if not recipe.normal.results then
+            recipe.normal.results = { format(recipe.normal.result, recipe.normal.result_count or 1) }
+        end
         recipe.normal.result = nil
         recipe.normal.result_count = nil
     end
 
     if recipe.expensive and recipe.expensive.result then
-        recipe.expensive.results = { format(recipe.expensive.result, recipe.expensive.result_count or 1) }
+        if not recipe.expensive.results then
+            recipe.expensive.results = { format(recipe.expensive.result, recipe.expensive.result_count or 1) }
+        end
         recipe.expensive.result = nil
         recipe.expensive.result_count = nil
     end
 
     if recipe.result then
-        recipe.results = { format(recipe.result, recipe.result_count or 1) }
+        if not recipe.results then
+            recipe.results = { format(recipe.result, recipe.result_count or 1) }
+        end
         recipe.result = nil
         recipe.result_count = nil
     end
@@ -441,7 +447,7 @@ end
 
 local function MakeSubGroup(name, order)
     local current_group = data.raw["item-subgroup"][name].group
-    local current_order = data.raw["item-subgroup"][name].order or order
+    local current_order = data.raw["item-subgroup"][name].order or order or "zzzzzz"
     local new_subgroup
     local subgroup
 

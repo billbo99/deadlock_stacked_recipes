@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.5.5
+Date: 2024-07-01
+  Changes:
+    - Handle when subgroups dont have an order set
+    - Handle when both result and results are set in a recipe
+---------------------------------------------------------------------------------------------------
 Version: 1.5.4
 Date: 2023-09-14
   Changes:
